@@ -165,9 +165,10 @@
 | 1 | 1.3 Modélisation BDD (Prisma) | **Terminé** | Schéma de données complet validé et déployé sur Supabase Cloud |
 | 1 | 1.4 KYC | **Terminé** | Abstraction Smile Identity, Supabase Storage, Modération RBAC |
 | 1 | 1.5 Frontend Web complet | **Terminé** | Next.js, Refonte claire, Formulaire KYC Drag & Drop |
+| 1 | 1.6 Mobile Sync (Parité) | **Terminé** | React Native Expo, Navigation, Auth, KYC, Paiements |
 | 1 | 1.7 Paiements & Escrow | **Terminé** | Architecture Hexagonale, MockProvider, Séquestre, Payout auto |
+| 1 | 1.8 Profils Entreprises (RCCM) | Non démarré | Annuaire B2B, Vérification KYB |
 | 3 | 3.1 → 3.10 | Non démarré | — |
-| 4 | 4.1 → 4.5 | Non démarré | — |
 
 > Mettre à jour à la clôture de chaque sprint : statut, date, principaux livrables, problèmes notables.
 
@@ -276,7 +277,11 @@
   - Implémentation du formulaire de KYC (`KycUploadForm.tsx`) avec support du Drag & Drop et prévisualisation.
   - Utilisation des **Next.js Server Actions** (`actions/kyc.ts`) pour communiquer de manière sécurisée avec l'API en injectant le token JWT (cookies `HttpOnly`), empêchant toute attaque XSS.
   - Refonte totale du Dashboard vers le **nouveau thème clair corporate**.
-- **Sprint 1.7 (Paiements & Séquestre / Escrow)** :
+- **Sprint 1.6 (Parité Mobile - React Native / Expo)** :
+  - Installation de l'architecture de navigation via `@react-navigation` (AuthStack et MainTabs).
+  - Synchronisation parfaite avec l'API via Axios et conservation sécurisée du JWT (`expo-secure-store`).
+  - Développement des écrans natifs calqués sur le Web : `Login`, `Signup`, `Dashboard`, `KycScreen` (avec `expo-image-picker`), et `PaymentScreen`.
+- **Sprint 1.7 (Paiements & Séquestre / Escrow Backend)** :
   - Mise en place d'une **Architecture Hexagonale** (Ports et Adaptateurs).
   - Création de l'interface `IPaymentProvider` définissant le standard pour tous les opérateurs (TMoney, Moov, CinetPay).
   - Implémentation du `MockPaymentService` simulable pour le développement local.
@@ -284,8 +289,8 @@
   - Implémentation de la logique de **Payout automatisé** (`releaseEscrow`), déclenchée uniquement par l'acheteur après confirmation de bonne réception.
 
 ### 2.8 Dépôt Git (2026-06-25)
-- Premier commit complet ("Init complet Siryia") et push réussi vers le dépôt distant GitHub `https://github.com/Profzen/siryia.git`.
-- Fichier `.gitignore` robuste validé.
+- Code Web, Backend et Mobile entièrement synchronisé, commit ("feat(mobile): Sprint 1.1-1.7 Mobile Parity") et poussé vers `https://github.com/Profzen/siryia.git`.
+- Résolution des problèmes de dépendances monorepo (lockfile et `expo/tsconfig.base`) en centralisant l'installation via `npm install` à la racine.
 
 ---
 
@@ -582,7 +587,15 @@ d:\zen\projets\Doc\
 - [ ] Page de gestion du Profil.
 - [ ] PWA + SEO (À peaufiner avant prod).
 
-### Étape I — Sprint 1.7 : Paiements & Escrow Backend (TERMINÉ ✅)
+### Étape I — Sprint 1.6 : Parité Mobile (TERMINÉ ✅)
+- [x] Installation React Navigation (Tabs + Stack).
+- [x] Axios + Expo Secure Store (Authentification).
+- [x] Ecrans Auth (Login / Signup).
+- [x] Dashboard Mobile et Thème Corporate.
+- [x] Upload KYC depuis le téléphone (`expo-image-picker`).
+- [x] Écran testeur de Paiements et Escrow.
+
+### Étape J — Sprint 1.7 : Paiements & Escrow Backend (TERMINÉ ✅)
 - [x] Modélisation Prisma validée (`Payment`, `Order`).
 - [x] Interface commune `IPaymentProvider`.
 - [x] Adaptateur `MockPaymentService`.
