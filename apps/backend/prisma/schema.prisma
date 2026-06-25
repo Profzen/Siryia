@@ -1,0 +1,368 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// -----------------------------------------------------------------------------
+// USERS, PROFILES & ROLES
+// -----------------------------------------------------------------------------
+
+model User {
+  id               String    @id @default(uuid())
+  email            String?   @unique
+  phone            String?   @unique
+  passwordHash     String?   // Haché en Argon2id
+  isEmailVerified  Boolean   @default(false)
+  isPhoneVerified  Boolean   @default(false)
+  twoFactorEnabled Boolean   @default(false)
+  twoFactorSecret  String?
+  
+  profile          Profile?
+  roles            UserRole[]
+  kycDocuments     KycDocument[]
+  
+  // Relations inverses
+  companies        CompanyMember[]
+  ordersAsBuyer    Order[]          @relation("BuyerOrders")
+  ordersAsSeller   OrderItem[]      @relation("SellerOrders")
+  serviceRequests  ServiceRequest[]
+  proposals        Proposal[]
+  vehicles         Vehicle[]
+  rentalsAsRenter  Rental[]         @relation("RenterRentals")
+  adCampaigns      AdCampaign[]
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  firstName String?
+  lastName  String?
+  bio       String?
+  avatarUrl String?
+  
+  // KYC Status (1: Basic, 2: Standard, 3: Business/Pro)
+  kycLevel  Int      @default(1)
+  kycStatus KycStatus @default(PENDING)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum KycStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  MORE_INFO_NEEDED
+}
+
+model Role {
+  id          String     @id // e.g., 'BUYER', 'SELLER', 'PROVIDER', 'COMPANY', 'ADMIN'
+  description String?
+  users       UserRole[]
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, roleId])
+}
+
+// -----------------------------------------------------------------------------
+// COMPANIES (Entreprises)
+// -----------------------------------------------------------------------------
+
+model Company {
+  id          String   @id @default(uuid())
+  name        String
+  rccm        String?  // Registre du commerce
+  taxId       String?  // NIF
+  address     String?
+  
+  members     CompanyMember[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CompanyMember {
+  id        String   @id @default(uuid())
+  userId    String
+  companyId String
+  role      String   // e.g., 'OWNER', 'ADMIN', 'EMPLOYEE'
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, companyId])
+}
+
+// -----------------------------------------------------------------------------
+// KYC
+// -----------------------------------------------------------------------------
+
+model KycDocument {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentType    String    // ID_CARD, PASSPORT, SELFIE, RCCM
+  fileUrl         String
+  status          KycStatus @default(PENDING)
+  rejectionReason String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// MARKETPLACE
+// -----------------------------------------------------------------------------
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  parentId    String?
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  
+  products    Product[]
+  services    ServiceListing[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  sellerId    String
+  categoryId  String
+  
+  title       String
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  condition   String   // NEW, USED_LIKE_NEW, USED_GOOD, etc.
+  images      String[] // Liste d'URLs
+  
+  category    Category @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  buyerId     String
+  buyer       User        @relation("BuyerOrders", fields: [buyerId], references: [id])
+  
+  totalAmount Decimal     @db.Decimal(10, 2)
+  status      OrderStatus @default(PENDING)
+  
+  items       OrderItem[]
+  payments    Payment[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  sellerId  String   // Permet le split de commande multi-vendeurs
+  
+  quantity  Int
+  unitPrice Decimal  @db.Decimal(10, 2)
+  
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  seller    User     @relation("SellerOrders", fields: [sellerId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARED
+  SHIPPED
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+// -----------------------------------------------------------------------------
+// SERVICES & RECRUITMENT
+// -----------------------------------------------------------------------------
+
+model ServiceListing {
+  id          String   @id @default(uuid())
+  providerId  String
+  categoryId  String
+  
+  title       String
+  description String
+  basePrice   Decimal? @db.Decimal(10, 2)
+  
+  category    Category @relation(fields: [categoryId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ServiceRequest {
+  id          String   @id @default(uuid())
+  clientId    String
+  client      User     @relation(fields: [clientId], references: [id])
+  
+  title       String
+  description String
+  budget      Decimal? @db.Decimal(10, 2)
+  status      RequestStatus @default(OPEN)
+  
+  proposals   Proposal[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum RequestStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Proposal {
+  id               String   @id @default(uuid())
+  serviceRequestId String
+  providerId       String
+  
+  amount           Decimal  @db.Decimal(10, 2)
+  message          String
+  status           ProposalStatus @default(PENDING)
+  
+  request          ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  provider         User           @relation(fields: [providerId], references: [id])
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+// -----------------------------------------------------------------------------
+// VEHICLES
+// -----------------------------------------------------------------------------
+
+model Vehicle {
+  id          String   @id @default(uuid())
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  
+  type        String   // CAR, MOTORCYCLE, TRUCK, etc.
+  make        String
+  model       String
+  year        Int
+  dailyRate   Decimal  @db.Decimal(10, 2)
+  
+  rentals     Rental[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Rental {
+  id          String   @id @default(uuid())
+  vehicleId   String
+  renterId    String
+  
+  startDate   DateTime
+  endDate     DateTime
+  totalAmount Decimal  @db.Decimal(10, 2)
+  status      RentalStatus @default(PENDING)
+  
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+  renter      User     @relation("RenterRentals", fields: [renterId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum RentalStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+// -----------------------------------------------------------------------------
+// ADS
+// -----------------------------------------------------------------------------
+
+model AdCampaign {
+  id           String   @id @default(uuid())
+  advertiserId String
+  advertiser   User     @relation(fields: [advertiserId], references: [id])
+  
+  title        String
+  budget       Decimal  @db.Decimal(10, 2)
+  status       AdStatus @default(DRAFT)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum AdStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+// -----------------------------------------------------------------------------
+// PAYMENTS & ESCROW
+// -----------------------------------------------------------------------------
+
+model Payment {
+  id          String   @id @default(uuid())
+  orderId     String?
+  order       Order?   @relation(fields: [orderId], references: [id])
+  
+  amount      Decimal  @db.Decimal(10, 2)
+  currency    String   @default("XOF")
+  provider    String   // TMONEY, MOOV, CINETPAY
+  status      PaymentStatus @default(PENDING)
+  
+  // Escrow details
+  isEscrowed  Boolean  @default(true)
+  escrowReleasedAt DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}

@@ -1,0 +1,84 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Diagnostics
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Node
+node_modules/
+
+# Monorepo / Turborepo
+.turbo
+dist/
+build/
+compiled/
+*.tsbuildinfo
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE / Editor
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environnement & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+!*.env.example
+
+# Next.js (apps/frontend)
+.next/
+out/
+
+# NestJS (apps/backend)
+dist/
+
+# Prisma
+# Note : on n'ignore pas le dossier prisma/, seulement la DB locale si on utilisait SQLite
+*.db
+*.db-journal
+
+# Expo / React Native (apps/mobile)
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+# android/ et ios/ seront gérés par Expo Prebuild, on peut les ignorer selon la stratégie
+# (Si on utilise le managed workflow, on ignore android et ios)
+android/
+ios/
+
+# Couverture de test
+coverage/
+.nyc_output/
