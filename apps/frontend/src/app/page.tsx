@@ -79,7 +79,7 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
         >
-          <button className="w-full sm:w-auto px-8 py-4 rounded bg-[#D49A25] text-white font-semibold flex items-center justify-center gap-2 hover:bg-[#b07d1a] shadow-lg shadow-[#D49A25]/20 transition-all">
+          <button className="w-full sm:w-auto px-8 py-4 rounded bg-primary-600 text-white font-semibold flex items-center justify-center gap-2 hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all">
             Explorer l'écosystème
             <ArrowRight className="w-4 h-4" />
           </button>

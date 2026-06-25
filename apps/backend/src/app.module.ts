@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { KycModule } from './kyc/kyc.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { KycModule } from './kyc/kyc.module';
     UsersModule,
     AuthModule,
     KycModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -164,7 +164,8 @@
 | 1 | 1.2 Authentification | **Terminé** | Argon2, JWT, Passport, Guards |
 | 1 | 1.3 Modélisation BDD (Prisma) | **Terminé** | Schéma de données complet validé et déployé sur Supabase Cloud |
 | 1 | 1.4 KYC | **Terminé** | Abstraction Smile Identity, Supabase Storage, Modération RBAC |
-| 1 | 1.5 Frontend Web complet | **En cours** | Next.js, UI, intégration Auth |
+| 1 | 1.5 Frontend Web complet | **Terminé** | Next.js, Refonte claire, Formulaire KYC Drag & Drop |
+| 1 | 1.7 Paiements & Escrow | **Terminé** | Architecture Hexagonale, MockProvider, Séquestre, Payout auto |
 | 3 | 3.1 → 3.10 | Non démarré | — |
 | 4 | 4.1 → 4.5 | Non démarré | — |
 
@@ -270,6 +271,21 @@
   - Intégration de **Supabase Storage** (bucket privé `kyc-documents`) pour stocker les pièces d'identité avec une sécurité maximale.
   - Endpoints d'upload de fichiers via `@nestjs/platform-express` (`multer`).
   - Mise en place du `RolesGuard` (RBAC) pour protéger les routes d'administration (`kyc-admin.controller.ts`) réservées aux modérateurs.
+
+- **Sprint 1.5 (Frontend Web Complet - KYC)** :
+  - Implémentation du formulaire de KYC (`KycUploadForm.tsx`) avec support du Drag & Drop et prévisualisation.
+  - Utilisation des **Next.js Server Actions** (`actions/kyc.ts`) pour communiquer de manière sécurisée avec l'API en injectant le token JWT (cookies `HttpOnly`), empêchant toute attaque XSS.
+  - Refonte totale du Dashboard vers le **nouveau thème clair corporate**.
+- **Sprint 1.7 (Paiements & Séquestre / Escrow)** :
+  - Mise en place d'une **Architecture Hexagonale** (Ports et Adaptateurs).
+  - Création de l'interface `IPaymentProvider` définissant le standard pour tous les opérateurs (TMoney, Moov, CinetPay).
+  - Implémentation du `MockPaymentService` simulable pour le développement local.
+  - Création du `PaymentModule` NestJS gérant l'initiation des paiements avec **Escrow par défaut** (`isEscrowed: true`).
+  - Implémentation de la logique de **Payout automatisé** (`releaseEscrow`), déclenchée uniquement par l'acheteur après confirmation de bonne réception.
+
+### 2.8 Dépôt Git (2026-06-25)
+- Premier commit complet ("Init complet Siryia") et push réussi vers le dépôt distant GitHub `https://github.com/Profzen/siryia.git`.
+- Fichier `.gitignore` robuste validé.
 
 ---
 
@@ -551,11 +567,28 @@ d:\zen\projets\Doc\
 - [x] Remplacer le Docker local par la base Supabase Cloud (via Session pooler IPv4).
 - [x] Générer la première vraie migration (`npx prisma migrate dev --name init_full_schema`).
 
-### Étape G — Sprint 1.5 : Frontend complet (auth + profil) (TERMINÉ ✅)
+### Étape G — Sprint 1.4 : KYC Backend (TERMINÉ ✅)
+- [x] Module `KycModule` (upload, statut).
+- [x] Abstraction Provider (MockSmileIdentity).
+- [x] Storage Supabase (bucket privé protégé).
+- [x] RBAC modérateur (`RolesGuard`).
+
+### Étape H — Sprint 1.5 : Frontend Web Complet (TERMINÉ ✅)
 - [x] Connexion du frontend Next.js à notre API locale.
-- [x] Pages login, signup, forgot password, vérification.
-- [x] Dashboard utilisateur.
+- [x] Pages login, signup.
+- [x] Dashboard utilisateur protégé par SSR (refonte thème clair).
+- [x] Interface d'Upload KYC (Formulaire + Drag&Drop).
+- [x] Server Actions pour sécurité maximale des transferts.
+- [ ] Page de gestion du Profil.
 - [ ] PWA + SEO (À peaufiner avant prod).
+
+### Étape I — Sprint 1.7 : Paiements & Escrow Backend (TERMINÉ ✅)
+- [x] Modélisation Prisma validée (`Payment`, `Order`).
+- [x] Interface commune `IPaymentProvider`.
+- [x] Adaptateur `MockPaymentService`.
+- [x] Initiation de paiement et gestion du `isEscrowed`.
+- [x] Endpoints webhooks de retour (T-Money/Moov factices).
+- [x] Endpoint de `releaseEscrow` (Transfert vers le vendeur automatisé).
 
 > Les autres sprints (1.4, 1.6 → 1.16) sont détaillés dans le fichier `sprint.md`.
 
@@ -598,4 +631,4 @@ Modules **exclus** du MVP (Phase 2+) :
 
 ---
 
-_Dernière mise à jour : 2026-06-25 (Modélisation DB Prisma & Cloud Supabase terminée)._
+_Dernière mise à jour : 2026-06-25 (KYC Backend terminé, Code poussé sur GitHub)._

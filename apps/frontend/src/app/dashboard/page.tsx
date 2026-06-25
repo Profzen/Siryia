@@ -30,7 +30,7 @@ export default async function DashboardPage() {
 
   if (!user) {
     return (
-      <div className="text-white/50">
+      <div className="text-slate-500">
         Erreur de chargement du profil. Veuillez vous reconnecter.
       </div>
     );
@@ -39,52 +39,52 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Tableau de bord</h1>
-        <p className="text-white/50 mt-1">Bienvenue sur votre espace sécurisé, {user.email}.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Tableau de bord</h1>
+        <p className="text-slate-600 mt-1">Bienvenue sur votre espace sécurisé, {user.email}.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="flex items-center gap-4">
-          <div className="p-3 bg-primary-500/20 rounded-full text-primary-400">
+        <Card className="flex items-center gap-4 shadow-sm border-slate-200">
+          <div className="p-3 bg-primary-50 rounded-full text-primary-600">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-white/50">Statut du compte</p>
-            <p className="text-lg font-semibold">Actif</p>
+            <p className="text-sm text-slate-500">Statut du compte</p>
+            <p className="text-lg font-semibold text-slate-900">Actif</p>
           </div>
         </Card>
 
-        <Card className="flex items-center gap-4">
-          <div className="p-3 bg-violet-500/20 rounded-full text-violet-400">
+        <Card className="flex items-center gap-4 shadow-sm border-slate-200">
+          <div className="p-3 bg-blue-50 rounded-full text-blue-600">
             <Calendar className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-white/50">Membre depuis</p>
-            <p className="text-lg font-semibold">Aujourd'hui</p>
+            <p className="text-sm text-slate-500">Membre depuis</p>
+            <p className="text-lg font-semibold text-slate-900">Aujourd'hui</p>
           </div>
         </Card>
 
-        <Card className="flex items-center gap-4">
-          <div className="p-3 bg-amber-500/20 rounded-full text-amber-400">
+        <Card className="flex items-center gap-4 shadow-sm border-slate-200">
+          <div className="p-3 bg-amber-50 rounded-full text-amber-600">
             <Activity className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-white/50">Niveau KYC</p>
-            <p className="text-lg font-semibold">Niveau 1</p>
+            <p className="text-sm text-slate-500">Niveau KYC</p>
+            <p className="text-lg font-semibold text-slate-900">Niveau {user.profile?.kycLevel || 1}</p>
           </div>
         </Card>
       </div>
 
-      <Card className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Informations Personnelles</h2>
+      <Card className="mt-8 shadow-sm border-slate-200">
+        <h2 className="text-xl font-semibold mb-4 text-slate-900">Informations Personnelles</h2>
         <div className="space-y-4">
-          <div className="grid grid-cols-3 py-3 border-b border-white/5">
-            <div className="text-white/50 text-sm">Identifiant (ID)</div>
-            <div className="col-span-2 text-sm font-mono text-white/80">{user.userId || user.sub}</div>
+          <div className="grid grid-cols-3 py-3 border-b border-slate-100">
+            <div className="text-slate-500 text-sm">Identifiant (ID)</div>
+            <div className="col-span-2 text-sm font-mono text-slate-700">{user.id || user.userId || user.sub}</div>
           </div>
-          <div className="grid grid-cols-3 py-3 border-b border-white/5">
-            <div className="text-white/50 text-sm">Adresse Email</div>
-            <div className="col-span-2 text-sm">{user.email}</div>
+          <div className="grid grid-cols-3 py-3 border-b border-slate-100">
+            <div className="text-slate-500 text-sm">Adresse Email</div>
+            <div className="col-span-2 text-sm text-slate-900">{user.email}</div>
           </div>
         </div>
       </Card>
