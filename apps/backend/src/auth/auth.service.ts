@@ -26,10 +26,10 @@ export class AuthService {
     // Créer l'utilisateur
     const user = await this.usersService.create({
       email,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
     });
 
-    return this.generateToken(user.id, user.email);
+    return this.generateToken(user.id, user.email as string);
   }
 
   async login(loginDto: LoginDto) {
@@ -42,12 +42,12 @@ export class AuthService {
     }
 
     // Vérifier le mot de passe
-    const isPasswordValid = await argon2.verify(user.password, password);
+    const isPasswordValid = await argon2.verify(user.passwordHash as string, password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Identifiants invalides');
     }
 
-    return this.generateToken(user.id, user.email);
+    return this.generateToken(user.id, user.email as string);
   }
 
   private generateToken(userId: string, email: string) {

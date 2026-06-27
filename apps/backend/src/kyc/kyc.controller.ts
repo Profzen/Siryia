@@ -1,6 +1,6 @@
 import { Controller, Post, Get, UseGuards, UseInterceptors, UploadedFile, Body, Req, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { KycService } from './kyc.service';
 
 @Controller('kyc')

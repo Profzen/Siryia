@@ -1,6 +1,6 @@
 import { Injectable, Inject, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { IPaymentProvider } from '../providers/payment/payment-provider.interface';
+import type { IPaymentProvider } from '../providers/payment/payment-provider.interface';
 
 @Injectable()
 export class PaymentService {

@@ -644,4 +644,13 @@ Modules **exclus** du MVP (Phase 2+) :
 
 ---
 
-_Dernière mise à jour : 2026-06-25 (KYC Backend terminé, Code poussé sur GitHub)._
+### 13.5 État d'avancement (2026-06-27)
+- **Marketplace Backend** : Modification de `schema.prisma` et initialisation du module `marketplace/` côté serveur.
+- **Marketplace Frontend** : Création du dossier `marketplace/`, de la gestion du panier (`cart/`), et du composant `ProductCard.tsx`.
+- **Profil Utilisateur** : Implémentation du Dashboard de profil (`dashboard/profile/`) avec Server Actions (`actions/profile.ts`).
+- **PWA (Web)** : Intégration initiale du Service Worker (`sw.ts`) et de `manifest.json`.
+- **State Management** : Mise en place du dossier `store/`.
+
+---
+
+_Dernière mise à jour : 2026-06-27 (Init Marketplace Backend/Frontend, Profil, PWA. Code poussé sur GitHub)._

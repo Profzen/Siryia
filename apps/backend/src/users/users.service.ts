@@ -17,4 +17,25 @@ export class UsersService {
       data,
     });
   }
+
+  async updateProfile(userId: string, data: { phone?: string; firstName?: string; lastName?: string; bio?: string }) {
+    const { phone, firstName, lastName, bio } = data;
+    
+    // Update User (phone) and Profile (firstName, lastName, bio)
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(phone && { phone }),
+        profile: {
+          upsert: {
+            create: { firstName, lastName, bio },
+            update: { firstName, lastName, bio },
+          },
+        },
+      },
+      include: {
+        profile: true,
+      },
+    });
+  }
 }

@@ -2,13 +2,15 @@
   "name": "siryia-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@10.9.3",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev:turbo": "turbo run dev",
+    "dev": "concurrently \"npm run dev -w apps/backend\" \"npm run dev -w apps/frontend\"",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "prepare": "husky"
@@ -16,6 +18,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
+    "concurrently": "^10.0.3",
     "husky": "^9.1.7",
     "turbo": "^2.0.0"
   }

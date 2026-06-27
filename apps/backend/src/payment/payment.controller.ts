@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Param, UseGuards, Req, Logger } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('payment')
 export class PaymentController {
@@ -14,7 +14,7 @@ export class PaymentController {
   @UseGuards(JwtAuthGuard)
   @Post('initiate')
   async initiatePayment(
-    @Req() req,
+    @Req() req: any,
     @Body() body: { amount: number; provider: string; orderId?: string; phone?: string }
   ) {
     const userId = req.user.userId;
@@ -50,7 +50,7 @@ export class PaymentController {
    */
   @UseGuards(JwtAuthGuard)
   @Post(':id/release')
-  async releaseEscrow(@Param('id') paymentId: string, @Req() req) {
+  async releaseEscrow(@Param('id') paymentId: string, @Req() req: any) {
     const userId = req.user.userId;
     return this.paymentService.releaseEscrow(paymentId, userId);
   }
