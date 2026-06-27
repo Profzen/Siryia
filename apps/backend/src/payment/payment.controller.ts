@@ -17,7 +17,7 @@ export class PaymentController {
     @Req() req: any,
     @Body() body: { amount: number; provider: string; orderId?: string; phone?: string }
   ) {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     return this.paymentService.initiateEscrowPayment(
       userId,
       body.amount,
@@ -51,7 +51,7 @@ export class PaymentController {
   @UseGuards(JwtAuthGuard)
   @Post(':id/release')
   async releaseEscrow(@Param('id') paymentId: string, @Req() req: any) {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     return this.paymentService.releaseEscrow(paymentId, userId);
   }
 }

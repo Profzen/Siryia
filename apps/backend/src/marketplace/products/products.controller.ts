@@ -15,7 +15,7 @@ export class ProductsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new product (Seller only)' })
   create(@Body() createProductDto: CreateProductDto, @CurrentUser() user: any) {
-    return this.productsService.create(user.sub, createProductDto);
+    return this.productsService.create(user.id, createProductDto);
   }
 
   @Get()

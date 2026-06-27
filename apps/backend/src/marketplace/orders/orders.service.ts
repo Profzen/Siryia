@@ -1,18 +1,22 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
+import { PaymentService } from '../../payment/payment.service';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private paymentService: PaymentService,
+  ) {}
 
   async create(buyerId: string, createOrderDto: CreateOrderDto) {
     if (!createOrderDto.items || createOrderDto.items.length === 0) {
       throw new BadRequestException('Order must contain at least one item');
     }
 
-    // Process order inside a transaction
-    return this.prisma.$transaction(async (prisma) => {
+    // 1. Create order and decrement stock in transaction
+    const order = await this.prisma.$transaction(async (prisma) => {
       let totalAmount = 0;
       const orderItemsData = [];
 
@@ -46,7 +50,7 @@ export class OrdersService {
       }
 
       // Create the order
-      const order = await prisma.order.create({
+      return prisma.order.create({
         data: {
           buyerId,
           totalAmount,
@@ -59,9 +63,27 @@ export class OrdersService {
           items: true,
         },
       });
-
-      return order;
     });
+
+    // 2. Initiate Escrow Payment
+    try {
+      const paymentInitiation = await this.paymentService.initiateEscrowPayment(
+        buyerId,
+        Number(order.totalAmount),
+        createOrderDto.paymentProvider,
+        order.id,
+        createOrderDto.phone,
+      );
+
+      return {
+        ...order,
+        payment: paymentInitiation,
+      };
+    } catch (error: any) {
+      throw new BadRequestException(
+        `Commande créée mais échec d'initiation du paiement: ${error.message || error}`,
+      );
+    }
   }
 
   async findMyOrders(buyerId: string) {
@@ -73,6 +95,7 @@ export class OrdersService {
             product: true,
           },
         },
+        payments: true,
       },
       orderBy: {
         createdAt: 'desc',

@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { User, Phone, Mail, FileText, Save, CheckCircle, AlertCircle } from 'lucide-react';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
-import GlassCard from '@/components/ui/GlassCard';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { updateProfile } from '@/app/actions/profile';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -21,7 +21,9 @@ export default function ProfilePage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
-    if (user) {
+    if (!user) {
+      fetchProfile();
+    } else {
       setFormData({
         firstName: user.profile?.firstName || '',
         lastName: user.profile?.lastName || '',
@@ -29,7 +31,7 @@ export default function ProfilePage() {
         bio: user.profile?.bio || '',
       });
     }
-  }, [user]);
+  }, [user, fetchProfile]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -61,9 +63,9 @@ export default function ProfilePage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-3xl font-bold mb-2">Mon Profil</h1>
-        <p className="text-slate-400 mb-8">Gérez vos informations personnelles et vos préférences.</p>
+        <p className="text-slate-500 mb-8">Gérez vos informations personnelles et vos préférences.</p>
 
-        <GlassCard className="p-8 border border-white/5">
+        <Card className="p-8 bg-white border border-slate-200 shadow-sm text-slate-900">
           {message && (
             <motion.div 
               initial={{ opacity: 0, height: 0 }}
@@ -81,46 +83,58 @@ export default function ProfilePage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input
-                label="Prénom"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                icon={<User size={18} className="text-slate-400" />}
-                placeholder="Votre prénom"
-              />
-              <Input
-                label="Nom"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                icon={<User size={18} className="text-slate-400" />}
-                placeholder="Votre nom"
-              />
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-slate-700 block">Prénom</label>
+                <Input
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  icon={<User size={18} className="text-slate-400" />}
+                  placeholder="Votre prénom"
+                  className="bg-slate-50 border-slate-200 text-slate-900 focus:bg-white"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-slate-700 block">Nom</label>
+                <Input
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  icon={<User size={18} className="text-slate-400" />}
+                  placeholder="Votre nom"
+                  className="bg-slate-50 border-slate-200 text-slate-900 focus:bg-white"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input
-                label="Email"
-                name="email"
-                value={user?.email || ''}
-                readOnly
-                disabled
-                icon={<Mail size={18} className="text-slate-400" />}
-                placeholder="votre@email.com"
-              />
-              <Input
-                label="Téléphone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                icon={<Phone size={18} className="text-slate-400" />}
-                placeholder="+228 90 00 00 00"
-              />
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-slate-700 block">Email</label>
+                <Input
+                  name="email"
+                  value={user?.email || ''}
+                  readOnly
+                  disabled
+                  icon={<Mail size={18} className="text-slate-400" />}
+                  placeholder="votre@email.com"
+                  className="bg-slate-100 border-slate-200 text-slate-500 cursor-not-allowed"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-slate-700 block">Téléphone</label>
+                <Input
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  icon={<Phone size={18} className="text-slate-400" />}
+                  placeholder="+228 90 00 00 00"
+                  className="bg-slate-50 border-slate-200 text-slate-900 focus:bg-white"
+                />
+              </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-300 block">Biographie</label>
+              <label className="text-sm font-medium text-slate-700 block">Biographie</label>
               <div className="relative">
                 <div className="absolute top-3 left-4 pointer-events-none">
                   <FileText size={18} className="text-slate-400" />
@@ -130,7 +144,7 @@ export default function ProfilePage() {
                   value={formData.bio}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all resize-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all resize-none"
                   placeholder="Parlez-nous de vous, vos compétences..."
                 />
               </div>
@@ -139,14 +153,15 @@ export default function ProfilePage() {
             <div className="pt-4 flex justify-end">
               <Button 
                 type="submit" 
-                isLoading={isLoading} 
-                icon={<Save size={18} />}
+                isLoading={isLoading}
+                className="bg-primary-600 text-white hover:bg-primary-500"
               >
+                <Save size={18} className="mr-2" />
                 Enregistrer les modifications
               </Button>
             </div>
           </form>
-        </GlassCard>
+        </Card>
       </motion.div>
     </div>
   );

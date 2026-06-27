@@ -8,9 +8,16 @@ import api from '@/lib/api';
 export default function CartPage() {
   const router = useRouter();
   const { items, updateQuantity, removeItem, clearCart, getTotal } = useCartStore();
+  const [paymentProvider, setPaymentProvider] = useState<'TMONEY' | 'MOOV'>('TMONEY');
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
+    if (!phone) {
+      alert('Veuillez saisir votre numéro de téléphone Mobile Money.');
+      return;
+    }
+    
     setLoading(true);
     try {
       // Map cart items to the DTO expected by backend (productId, quantity)
@@ -19,11 +26,15 @@ export default function CartPage() {
         quantity: item.quantity,
       }));
 
-      await api.post('/orders', { items: orderItems });
+      const response = await api.post('/orders', { 
+        items: orderItems,
+        paymentProvider,
+        phone
+      });
       
       clearCart();
-      alert('Commande créée avec succès !');
-      router.push('/dashboard/orders');
+      alert('Commande créée et paiement initié avec succès !');
+      router.push('/dashboard');
     } catch (error: any) {
       console.error('Checkout failed', error);
       alert(error.response?.data?.message || 'Erreur lors de la création de la commande');
@@ -54,7 +65,8 @@ export default function CartPage() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-white tracking-tight mb-8">Mon Panier</h1>
 
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 mb-8">
+        {/* Liste des articles */}
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 mb-6">
           <ul className="divide-y divide-white/10">
             {items.map((item) => (
               <li key={item.id} className="py-6 flex flex-col sm:flex-row gap-6 items-center">
@@ -95,6 +107,54 @@ export default function CartPage() {
           </ul>
         </div>
 
+        {/* Options de Paiement Séquestre */}
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 mb-6 text-white">
+          <h2 className="text-xl font-bold mb-4">Mode de Paiement (Séquestre Siryia)</h2>
+          <p className="text-gray-400 text-sm mb-6">
+            Vos fonds seront bloqués de manière sécurisée par Siryia et ne seront reversés au vendeur qu'une fois que vous aurez confirmé la livraison.
+          </p>
+          
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <button
+              type="button"
+              onClick={() => setPaymentProvider('TMONEY')}
+              className={`p-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                paymentProvider === 'TMONEY'
+                  ? 'border-yellow-500 bg-yellow-500/10 text-white'
+                  : 'border-white/10 bg-white/5 text-gray-400 hover:bg-white/10'
+              }`}
+            >
+              <span className="font-bold text-lg">TMoney</span>
+              <span className="text-xs mt-1">Togo (T-Money)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPaymentProvider('MOOV')}
+              className={`p-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                paymentProvider === 'MOOV'
+                  ? 'border-blue-500 bg-blue-500/10 text-white'
+                  : 'border-white/10 bg-white/5 text-gray-400 hover:bg-white/10'
+              }`}
+            >
+              <span className="font-bold text-lg">Moov Money</span>
+              <span className="text-xs mt-1">Togo (Flooz)</span>
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-300">Numéro Mobile Money (+228...)</label>
+            <input
+              type="tel"
+              placeholder="+228 90 00 00 00"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        {/* Sommaire & Validation */}
         <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 flex flex-col sm:flex-row justify-between items-center">
           <div className="mb-6 sm:mb-0 text-center sm:text-left">
             <span className="text-gray-400 block mb-1">Total à payer</span>
@@ -109,7 +169,7 @@ export default function CartPage() {
             {loading ? (
               <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
             ) : (
-              'Valider la commande'
+              'Valider et Payer'
             )}
           </button>
         </div>

@@ -645,12 +645,11 @@ Modules **exclus** du MVP (Phase 2+) :
 ---
 
 ### 13.5 État d'avancement (2026-06-27)
-- **Marketplace Backend** : Modification de `schema.prisma` et initialisation du module `marketplace/` côté serveur.
-- **Marketplace Frontend** : Création du dossier `marketplace/`, de la gestion du panier (`cart/`), et du composant `ProductCard.tsx`.
-- **Profil Utilisateur** : Implémentation du Dashboard de profil (`dashboard/profile/`) avec Server Actions (`actions/profile.ts`).
-- **PWA (Web)** : Intégration initiale du Service Worker (`sw.ts`) et de `manifest.json`.
-- **State Management** : Mise en place du dossier `store/`.
+- **Marketplace Backend** : Initialisation du module `marketplace/` et liaison complète avec le module `payment` pour le paiement séquestre (TMoney / Moov Money) lors du checkout de la commande. Correction des ID d'utilisateurs (`user.sub` -> `user.id`).
+- **Marketplace Frontend** : Intégration d'un sélecteur de mode de paiement Mobile Money et de saisie de numéro dans [cart/page.tsx](file:///g:/zen/projets/Doc/apps/frontend/src/app/cart/page.tsx).
+- **Profil Utilisateur** : Refonte de la page de profil pour se conformer au design épuré V2 Pro/Organique (remplacement de `GlassCard` par `Card` standard) et correction des imports.
+- **PWA & Build** : Correction du Service Worker [sw.ts](file:///g:/zen/projets/Doc/apps/frontend/src/app/sw.ts) pour éliminer les erreurs de build TypeScript, et création de l'utilitaire d'API Axios [api.ts](file:///g:/zen/projets/Doc/apps/frontend/src/lib/api.ts) et du store global [useAuthStore.ts](file:///g:/zen/projets/Doc/apps/frontend/src/store/useAuthStore.ts).
 
 ---
 
-_Dernière mise à jour : 2026-06-27 (Init Marketplace Backend/Frontend, Profil, PWA. Code poussé sur GitHub)._
+_Dernière mise à jour : 2026-06-27 (Liaison Marketplace-Paiements, correctifs d'authentification et de build frontend)._

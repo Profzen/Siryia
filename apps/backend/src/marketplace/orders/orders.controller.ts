@@ -15,12 +15,12 @@ export class OrdersController {
   @Post()
   @ApiOperation({ summary: 'Create a new order (Checkout)' })
   create(@Body() createOrderDto: CreateOrderDto, @CurrentUser() user: any) {
-    return this.ordersService.create(user.sub, createOrderDto);
+    return this.ordersService.create(user.id, createOrderDto);
   }
 
   @Get('my-orders')
   @ApiOperation({ summary: 'Get current user orders' })
   findMyOrders(@CurrentUser() user: any) {
-    return this.ordersService.findMyOrders(user.sub);
+    return this.ordersService.findMyOrders(user.id);
   }
 }
