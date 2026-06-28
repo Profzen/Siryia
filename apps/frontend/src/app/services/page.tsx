@@ -30,9 +30,11 @@ export default function ServicesPage() {
             <p className="text-slate-500 mb-8">
               Publiez une demande de service, décrivez votre besoin et comparez les devis.
             </p>
-            <Button className="mt-auto w-full max-w-xs" onClick={() => alert('Fonctionnalité en cours de préparation (Sprint 1.14)')}>
-              Publier un besoin
-            </Button>
+            <Link href="/services/demander" className="mt-auto w-full max-w-xs">
+              <Button className="w-full">
+                Publier un besoin
+              </Button>
+            </Link>
           </div>
 
           {/* Card 2 */}
@@ -44,9 +46,11 @@ export default function ServicesPage() {
             <p className="text-slate-500 mb-8">
               Parcourez les offres de missions disponibles, proposez vos services et gagnez de nouveaux clients.
             </p>
-            <Button variant="outline" className="mt-auto w-full max-w-xs" onClick={() => alert('Fonctionnalité en cours de préparation (Sprint 1.14)')}>
-              Voir les missions
-            </Button>
+            <Link href="/services/missions" className="mt-auto w-full max-w-xs">
+              <Button variant="outline" className="w-full">
+                Voir les missions
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

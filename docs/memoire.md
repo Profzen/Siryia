@@ -835,3 +835,10 @@ Pour assurer que l'application ne plante pas lors de sa mise en ligne, le procha
 1. **Adaptateur Vercel** : CrÃ©ation d'un point d'entrÃ©e serverless (`api/index.ts`) et d'un `vercel.json` pour que NestJS tourne sur l'infrastructure Vercel.
 2. **Hardening (SÃ©curitÃ© API)** : IntÃ©gration de `helmet` (headers HTTP sÃ©curisÃ©s), CORS strict, et limitation de requÃªtes (Rate Limiting) pour bloquer le spam (trÃ¨s important une fois en ligne).
 3. **Tests de Build** : S'assurer que le monorepo compile sans la moindre erreur (`npm run build`).
+
+## 18. Phase 2 (Sprints 2.1, 2.2, 2.3) - Finalisation de bout en bout
+- **Compilation Backend** : Correction du problème de génération de dist avec nest build en supprimant tsconfig.build.tsbuildinfo pour forcer la regénération des assets. Le backend fonctionne désormais correctement.
+- **Frontend - Fixes critiques** : Correction de l'invisibilité du texte dans l'UI Input en Light Mode.
+- **Frontend - Services** : Création des pages /services/demander et /services/missions pour finaliser le flow.
+- **Frontend - Véhicules** : Implémentation de la page /vehicles (Sprint 2.3) affichant la liste des véhicules.
+- **Backend - Phase 2** : Le backend contient tous les contrôleurs/services de la Phase 2 (Agendas, Téléconsultation, Véhicules).
