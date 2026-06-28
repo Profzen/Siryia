@@ -730,3 +730,32 @@ Modules **exclus** du MVP (Phase 2+) :
 ---
 
 _Dernière mise à jour : 2026-06-28 (Fin du Sprint 1.11 - Backend et Frontend Messagerie & Notifications)._
+
+---
+
+## 14. Bilan Global et Point de Reprise (POUR L'AGENT SUIVANT)
+
+> **⚠️ À L'ATTENTION DU PROCHAIN AGENT IA** : Si vous reprenez ce projet dans une nouvelle session, voici l'état exact du système au **28 Juin 2026** :
+
+1. **Phase 1 (MVP) 100% Fonctionnelle** : 
+   - L'architecture Monorepo (Next.js, NestJS, Expo) est en place.
+   - Les Sprints 1.1 à 1.13 ont été entièrement codés, testés et déployés sur l'environnement local/Supabase de dev.
+   - Le système inclut la Messagerie WebSocket (1.11), le Ticketing/Support (1.12) et la Console d'Administration Globale (1.13).
+
+2. **État de la Base de Données (Prisma / Supabase)** :
+   - Tous les modèles (Utilisateurs, Commandes, Tickets, KYC, Entreprises, Messages) sont créés dans `schema.prisma`.
+   - La migration a été appliquée sur Supabase (Pooler IPv4 utilisé).
+   - *Note système : en cas de modification future du `schema.prisma`, arrêtez toujours le serveur backend (`npm run dev`) avant de faire `npx prisma generate` sur Windows pour éviter l'erreur EPERM.*
+
+3. **État de l'Authentification** :
+   - Protégé par JWT (Argon2id). Le JWT est stocké en Cookie HttpOnly côté Next.js (Server Actions) et SecureStore côté Expo.
+   - **Important** : Le `RolesGuard` est actif côté backend. Pour tester la route `/admin`, l'utilisateur de test doit posséder le rôle `ADMIN` en base de données. Les requêtes JWT incluent `req.user.roles`.
+
+4. **Prochaine Action (Sprint 1.14)** :
+   - Le prochain sprint logique est le **Sprint 1.14 : Hardening Sécurité + Tests de charge + Pré-prod**.
+   - Cela implique la vérification des middlewares de sécurité (Helmet, Rate Limiting), la configuration des logs (Winston), et les ajustements finaux avant un déploiement réel sur Vercel/VPS.
+
+5. **Règles absolues** : 
+   - Ne **JAMAIS** proposer de code "brouillon" ou bas de gamme.
+   - Conservez le design system (Corporate Light Mode, Bleu #17519B et Or #D49A25).
+   - Toujours mettre à jour `implementation_plan.md` avant de coder, et `memoire.md` après.
