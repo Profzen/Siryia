@@ -692,7 +692,8 @@ Modules **exclus** du MVP (Phase 2+) :
 - **Annuaire & Profils Professionnels** : Implémentation du module de recherche globale unifié d'indépendants solos (rôle `PROVIDER`) et de structures (entreprises formelles avec RCCM/NIF et collectifs informels).
 - **Dashboard Équipe (KYB)** : Ajout de la page `/dashboard/company` pour enregistrer sa structure, gérer ses informations de contact, et inviter des collaborateurs par email.
 - **Vitrines Publiques** : Création des pages de recherche d'artisans (`/annuaire`), et des fiches détaillées solos (`/annuaire/solo/[id]`) et entreprises (`/annuaire/company/[id]`) en V2 Pro/Organique.
+- **Sprint 1.11 (Frontend Messagerie)** : Création d'un store Zustand persistant pour Socket.io (`useSocketStore.ts`), implémentation de l'interface complète de la messagerie (`/dashboard/messages`) avec historique et anti-contournement dynamique, et ajout d'un système de cloche de notifications temps réel en haut du Dashboard. Code validé et commité sur le dépôt.
 
 ---
 
-_Dernière mise à jour : 2026-06-28 (Annuaire professionnel B2B/Solos, Dashboard équipe KYB, et compilation réussie)._
+_Dernière mise à jour : 2026-06-28 (Fin du Sprint 1.11 - Backend et Frontend Messagerie & Notifications)._
