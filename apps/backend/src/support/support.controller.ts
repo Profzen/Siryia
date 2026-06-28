@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Param, UseGuards, Query } from '@nestjs/co
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { SupportService } from './support.service';
 import { CreateTicketDto, AddMessageDto } from './support.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @ApiTags('Support & Ticketing')
 @Controller('support')

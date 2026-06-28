@@ -26,6 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     
     // On retourne l'objet qui sera injecté dans la requête HTTP (req.user)
     // Nous ne renvoyons que ce dont nous avons besoin, pas le mot de passe !
-    return { id: user.id, email: user.email };
+    const roles = user.roles ? user.roles.map(r => r.roleId) : [];
+    return { id: user.id, email: user.email, roles };
   }
 }
