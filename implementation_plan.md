@@ -1,41 +1,38 @@
-# Objectif : Sprint 1.11 — Messagerie & Notifications
+# Objectif : Sprint 1.11 — Messagerie & Notifications (Intégration Frontend)
 
-L'objectif de ce sprint est de mettre en place une communication fluide et multicanal pour la plateforme Siryia, permettant aux utilisateurs d'échanger en temps réel de manière sécurisée (avec filtrage anti-contournement) et d'être notifiés des événements importants.
+Ce plan décrit l'intégration de la fonctionnalité de chat en temps réel et de la gestion des notifications sur l'interface Next.js (Frontend).
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Décision d'Architecture - Temps Réel**
-> NestJS propose `@nestjs/websockets` avec `Socket.io` pour le temps réel. Est-ce que cette approche vous convient pour le Chat ? Nous utiliserons cela pour implémenter un Gateway WebSocket sécurisé par JWT.
+> **Dépendance nécessaire**
+> Je vais installer `socket.io-client` sur le frontend. Êtes-vous d'accord ?
 > 
-> **Décision d'Architecture - Notifications Push/Email**
-> Pour le MVP de notification, nous allons créer les entités de BDD et le module de routage. Voulons-nous implémenter de vrais providers (ex: Resend pour email, Firebase pour Push) maintenant, ou utiliser un `MockNotificationProvider` dans un premier temps comme nous l'avons fait pour KYC et Paiement ?
+> **Architecture de l'État**
+> Nous utiliserons le store global `Zustand` (déjà présent) pour maintenir la connexion active du socket à travers toute l'application (utile pour recevoir les notifs de n'importe où), et la page `/dashboard/messages` s'y abonnera pour l'interface du Chat. Cela vous convient-il ?
 
 ## Proposed Changes
 
-### Base de Données (Prisma)
-- [MODIFY] `schema.prisma`
-  - Ajout du modèle `Notification` (id, userId, title, body, type, isRead, actionUrl, createdAt).
-  - Modification du modèle `Message` pour supporter les types de messages (TEXT, IMAGE, AUDIO) et les pièces jointes (URLs).
-  - Ajout de la relation `notifications Notification[]` sur le modèle `User`.
+### Configuration Globale
+- **Installation** : Ajout de `socket.io-client`.
+- [NEW] `apps/frontend/src/store/useSocketStore.ts` : Un store Zustand responsable de la création, du maintien et de la destruction de l'instance `Socket`. Il écoutera globalement l'événement `newMessage` et l'événement `newNotification`.
+- [MODIFY] `apps/frontend/src/app/dashboard/layout.tsx` : Injection d'un composant de fond (ex: `<SocketProvider>`) pour initialiser le WebSocket dès que l'utilisateur est connecté et se trouve sur son tableau de bord.
 
-### Backend (API NestJS)
-- [NEW] `apps/backend/src/messaging/messaging.module.ts` (et ses contrôleurs/services associés).
-  - Endpoint HTTP pour récupérer l'historique des conversations (`GET /messaging/conversations` et `GET /messaging/:userId/messages`).
-  - Implémentation du service `AntiCircumventionService` (Filtrage regex pour masquer téléphones, emails, liens).
-- [NEW] `apps/backend/src/messaging/messaging.gateway.ts`
-  - Gateway WebSocket (`@WebSocketGateway()`) pour émettre et écouter des messages en temps réel.
-  - Authentification via `WsJwtGuard` (vérification du token JWT lors de la connexion socket).
-- [NEW] `apps/backend/src/notifications/notifications.module.ts`
-  - Modélisation d'un `NotificationService` avec un gestionnaire multicanal (In-App, Email, Push).
-  - Endpoints REST pour la gestion In-App (`GET /notifications`, `PATCH /notifications/:id/read`).
+### Interface Messagerie
+- [NEW] `apps/frontend/src/app/dashboard/messages/page.tsx` : La vue principale regroupant la liste des contacts/conversations à gauche, et la fenêtre de chat à droite.
+- [NEW] `apps/frontend/src/components/chat/ConversationList.tsx` : Affichage de la liste des conversations (triées par dernier message).
+- [NEW] `apps/frontend/src/components/chat/ChatWindow.tsx` : Affichage dynamique des bulles de messages (`MessageBubble`) avec prise en charge des données filtrées par l'anti-contournement (ex: email masqué).
+- [NEW] `apps/frontend/src/components/chat/ChatInput.tsx` : Champ de saisie avec le bouton "Envoyer".
+
+### Interface Notifications (In-App)
+- [NEW] `apps/frontend/src/components/notifications/NotificationBell.tsx` : Une cloche dans la barre de navigation du Dashboard qui affiche le compteur de notifications non lues.
+- [NEW] `apps/frontend/src/components/notifications/NotificationDropdown.tsx` : Le menu déroulant pour afficher les notifications récentes et le bouton "Tout marquer comme lu".
 
 ## Verification Plan
 
-### Automated Tests
-- Validation de la regex anti-contournement avec différents formats de téléphones africains, adresses emails, et RIB maquillés.
-- Test unitaire des envois de notifications et du routage (In-App).
-
 ### Manual Verification
-- Démarrer le serveur NestJS avec le module WebSockets actif.
-- Se connecter avec un client test (ex: Postman WebSocket ou client front basique) et vérifier l'envoi, la réception, et la persistance des messages, ainsi que le masquage automatique des données de contact.
+- Ouvrir deux navigateurs différents (ou une session normale et une en mode privé).
+- Connecter "Alice" sur le navigateur A et "Bob" sur le navigateur B.
+- Entamer une discussion depuis l'onglet "Messagerie" : vérifier l'instantanéité de l'envoi/réception sans rechargement de page.
+- Tester l'anti-contournement en tapant un numéro de téléphone africain ou un email et vérifier que la bulle s'affiche avec le texte masqué.
+- Envoyer une notification système depuis le backend et vérifier que le compteur s'incrémente sur le frontend.
