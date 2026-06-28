@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { registerAction } from "@/app/actions/auth";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -25,18 +26,18 @@ function SubmitButton() {
 }
 
 export default function SignupPage() {
-  const [state, formAction] = useFormState(registerAction, initialState);
+  const [state, formAction] = useActionState(registerAction, initialState);
 
   return (
     <div className="flex flex-col">
       <div className="mb-8 text-center">
         <Link href="/" className="inline-block mb-4">
-          <span className="text-2xl font-bold tracking-tight text-white">
-            Sir<span className="text-primary-500">y</span>ia.
+          <span className="text-2xl font-bold tracking-tight text-slate-900">
+            Sir<span className="text-primary-600">y</span>ia.
           </span>
         </Link>
-        <h1 className="text-2xl font-semibold text-white">Rejoignez-nous</h1>
-        <p className="text-sm text-white/50 mt-2">Créez votre compte en quelques secondes.</p>
+        <h1 className="text-2xl font-semibold text-slate-900">Rejoignez-nous</h1>
+        <p className="text-sm text-slate-500 mt-2">Créez votre compte en quelques secondes.</p>
       </div>
 
       <form action={formAction} className="flex flex-col gap-4">
@@ -47,7 +48,7 @@ export default function SignupPage() {
         )}
 
         <div className="space-y-1">
-          <label className="text-xs text-white/70 ml-1">Nom complet</label>
+          <label className="text-xs text-slate-600 font-medium ml-1">Nom complet</label>
           <Input 
             name="name" 
             type="text" 
@@ -57,18 +58,18 @@ export default function SignupPage() {
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs text-white/70 ml-1">Adresse email</label>
+          <label className="text-xs text-slate-600 font-medium ml-1">Email ou Téléphone</label>
           <Input 
-            name="email" 
-            type="email" 
-            placeholder="vous@exemple.com" 
+            name="identifier" 
+            type="text" 
+            placeholder="vous@exemple.com ou +228..." 
             icon={<Mail className="w-4 h-4" />} 
             required 
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs text-white/70 ml-1">Mot de passe</label>
+          <label className="text-xs text-slate-600 font-medium ml-1">Mot de passe</label>
           <Input 
             name="password" 
             type="password" 
@@ -82,9 +83,9 @@ export default function SignupPage() {
         <SubmitButton />
       </form>
 
-      <p className="text-center text-sm text-white/50 mt-8">
+      <p className="text-center text-sm text-slate-500 mt-8">
         Vous avez déjà un compte ?{" "}
-        <Link href="/login" className="text-white hover:text-primary-400 transition-colors">
+        <Link href="/login" className="text-primary-600 hover:text-primary-700 font-medium transition-colors">
           Se connecter
         </Link>
       </p>

@@ -13,6 +13,14 @@ export class UsersService {
     });
   }
 
+  async findByIdentifier(identifier: string) {
+    const isEmail = identifier.includes('@');
+    return this.prisma.user.findFirst({
+      where: isEmail ? { email: identifier } : { phone: identifier },
+      include: { roles: true }
+    });
+  }
+
   async create(data: Prisma.UserCreateInput) {
     return this.prisma.user.create({
       data,

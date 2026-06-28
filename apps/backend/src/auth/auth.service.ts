@@ -12,12 +12,13 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { email, password } = registerDto;
+    const { identifier, password } = registerDto;
+    const isEmail = identifier.includes('@');
 
     // Vérifier si l'utilisateur existe déjà
-    const existingUser = await this.usersService.findByEmail(email);
+    const existingUser = await this.usersService.findByIdentifier(identifier);
     if (existingUser) {
-      throw new ConflictException('Un utilisateur avec cet email existe déjà');
+      throw new ConflictException('Un utilisateur avec cet identifiant existe déjà');
     }
 
     // Hacher le mot de passe avec Argon2id
@@ -25,18 +26,18 @@ export class AuthService {
 
     // Créer l'utilisateur
     const user = await this.usersService.create({
-      email,
+      ...(isEmail ? { email: identifier } : { phone: identifier }),
       passwordHash: hashedPassword,
     });
 
-    return this.generateToken(user.id, user.email as string);
+    return this.generateToken(user.id, identifier);
   }
 
   async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+    const { identifier, password } = loginDto;
 
     // Trouver l'utilisateur
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByIdentifier(identifier);
     if (!user) {
       throw new UnauthorizedException('Identifiants invalides');
     }
@@ -47,7 +48,7 @@ export class AuthService {
       throw new UnauthorizedException('Identifiants invalides');
     }
 
-    return this.generateToken(user.id, user.email as string);
+    return this.generateToken(user.id, identifier);
   }
 
   private generateToken(userId: string, email: string) {

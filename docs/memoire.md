@@ -759,3 +759,15 @@ _Dernière mise à jour : 2026-06-28 (Fin du Sprint 1.11 - Backend et Frontend M
    - Ne **JAMAIS** proposer de code "brouillon" ou bas de gamme.
    - Conservez le design system (Corporate Light Mode, Bleu #17519B et Or #D49A25).
    - Toujours mettre à jour `implementation_plan.md` avant de coder, et `memoire.md` après.
+
+## 15. Correctifs Post-MVP et Améliorations Auth (Sprint 1.13b)
+- **Correction des 404 de l'API** : Le préfixe global `api` était doublé dans les contrôleurs (Annuaire, Recrutement, Marketplace, etc.). Cela a été corrigé.
+- **Support React 19** : Migration de `useFormState` vers `useActionState` dans les formulaires d'authentification.
+- **UI/UX et Responsive** : Correction de la lisibilité de la page de connexion (Light Mode) et blocage du scroll horizontal sur mobile.
+- **Authentification Numéro de Téléphone** : 
+  - La base de données autorisait déjà `email` ou `phone` de manière optionnelle.
+  - Mise à jour du backend (`auth.service`, `users.service`, DTOs) pour permettre la connexion ou l'inscription avec un email **OU** un numéro de téléphone via un champ unique nommé `identifier`.
+  - Mise à jour des formulaires Frontend (Label "Email ou Téléphone", Type "text").
+- **Page Services** : Création d'une page `apps/frontend/src/app/services/page.tsx` pour combler la 404 en attendant l'intégration complète du module de recrutement.
+
+**Statut** : Le MVP est maintenant stabilisé, parfaitement fonctionnel de bout en bout, sans scroll horizontal, et supporte les numéros de téléphone. Prêt pour le **Sprint 1.14 (Sécurité & Pré-prod)**.

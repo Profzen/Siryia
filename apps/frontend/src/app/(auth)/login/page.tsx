@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { loginAction } from "@/app/actions/auth";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -25,18 +26,18 @@ function SubmitButton() {
 }
 
 export default function LoginPage() {
-  const [state, formAction] = useFormState(loginAction, initialState);
+  const [state, formAction] = useActionState(loginAction, initialState);
 
   return (
     <div className="flex flex-col">
       <div className="mb-8 text-center">
         <Link href="/" className="inline-block mb-4">
-          <span className="text-2xl font-bold tracking-tight text-white">
-            Sir<span className="text-primary-500">y</span>ia.
+          <span className="text-2xl font-bold tracking-tight text-slate-900">
+            Sir<span className="text-primary-600">y</span>ia.
           </span>
         </Link>
-        <h1 className="text-2xl font-semibold text-white">Bon retour !</h1>
-        <p className="text-sm text-white/50 mt-2">Connectez-vous pour accéder à votre espace.</p>
+        <h1 className="text-2xl font-semibold text-slate-900">Bon retour !</h1>
+        <p className="text-sm text-slate-500 mt-2">Connectez-vous pour accéder à votre espace.</p>
       </div>
 
       <form action={formAction} className="flex flex-col gap-4">
@@ -47,11 +48,11 @@ export default function LoginPage() {
         )}
 
         <div className="space-y-1">
-          <label className="text-xs text-white/70 ml-1">Adresse email</label>
+          <label className="text-xs text-slate-600 font-medium ml-1">Email ou Téléphone</label>
           <Input 
-            name="email" 
-            type="email" 
-            placeholder="vous@exemple.com" 
+            name="identifier" 
+            type="text" 
+            placeholder="vous@exemple.com ou +228..." 
             icon={<Mail className="w-4 h-4" />} 
             required 
           />
@@ -59,7 +60,7 @@ export default function LoginPage() {
 
         <div className="space-y-1">
           <div className="flex justify-between items-center ml-1">
-            <label className="text-xs text-white/70">Mot de passe</label>
+            <label className="text-xs text-slate-600 font-medium">Mot de passe</label>
             <Link href="/forgot-password" className="text-xs text-primary-400 hover:text-primary-300 transition-colors">
               Oublié ?
             </Link>
@@ -76,9 +77,9 @@ export default function LoginPage() {
         <SubmitButton />
       </form>
 
-      <p className="text-center text-sm text-white/50 mt-8">
+      <p className="text-center text-sm text-slate-500 mt-8">
         Vous n'avez pas de compte ?{" "}
-        <Link href="/signup" className="text-white hover:text-primary-400 transition-colors">
+        <Link href="/signup" className="text-primary-600 hover:text-primary-700 font-medium transition-colors">
           S'inscrire
         </Link>
       </p>

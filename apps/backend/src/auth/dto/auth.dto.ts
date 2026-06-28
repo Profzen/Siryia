@@ -4,11 +4,11 @@ import { IsEmail, IsNotEmpty, MinLength, IsOptional, IsString } from 'class-vali
 export class RegisterDto {
   @ApiProperty({
     example: 'user@siryia.com',
-    description: 'Adresse email de l\'utilisateur',
+    description: 'Adresse email ou numéro de téléphone',
   })
-  @IsEmail({}, { message: 'L\'email doit être valide' })
-  @IsNotEmpty({ message: 'L\'email est requis' })
-  email!: string;
+  @IsNotEmpty({ message: 'L\'identifiant est requis' })
+  @IsString()
+  identifier!: string;
 
   @ApiProperty({
     example: 'S3cur3P@ssw0rd!',
@@ -22,9 +22,9 @@ export class RegisterDto {
 
 export class LoginDto {
   @ApiProperty({ example: 'user@siryia.com' })
-  @IsEmail({}, { message: 'L\'email doit être valide' })
-  @IsNotEmpty({ message: 'L\'email est requis' })
-  email!: string;
+  @IsNotEmpty({ message: 'L\'identifiant est requis' })
+  @IsString()
+  identifier!: string;
 
   @ApiProperty({ example: 'S3cur3P@ssw0rd!' })
   @IsNotEmpty({ message: 'Le mot de passe est requis' })

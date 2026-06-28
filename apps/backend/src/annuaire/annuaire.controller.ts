@@ -4,7 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('Annuaire Professionnel')
-@Controller('api/annuaire')
+@Controller('annuaire')
 export class AnnuaireController {
   constructor(
     private readonly annuaireService: AnnuaireService,
