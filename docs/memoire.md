@@ -325,6 +325,35 @@
 
 ---
 
+
+### 2.11 Travail réalisé au 2026-06-28 (Sprint 1.14 - Sécurité & Préparation Vercel)
+
+- **Hardening Backend (NestJS)** :
+  - Installation et configuration de `helmet` pour la sécurité des en-têtes HTTP (anti-XSS, anti-sniffing).
+  - Intégration de `@nestjs/throttler` pour le **Rate Limiting** global (anti-spam, 100 requêtes/minute/IP).
+- **Adaptateur Serverless (Vercel)** :
+  - Création de `apps/backend/api/index.ts` exportant l'instance NestJS en fonction serverless.
+  - Ajout de `apps/backend/vercel.json` pour rediriger les requêtes vers la fonction serverless.
+  - Le code original du `main.ts` (incluant les WebSockets) est conservé intact pour les environnements classiques et le dev local.
+- **Fiabilisation des builds** :
+  - Correction d'un bug TypeScript (`isHydrated`) dans le layout de l'administration (`apps/frontend/src/app/admin/layout.tsx`).
+  - Validation du `npm run build` global via Turborepo avec 100% de succès.
+
+### 2.12 Travail réalisé au 2026-06-28 (Sprint 1.6 - App Mobile MVP)
+
+- **Architecture React Native / Expo** :
+  - Mise en place complète du dossier `apps/mobile/src` avec séparation (api, components, navigation, screens, store, theme).
+  - Configuration de **Zustand** pour l'état global et de **Axios** pour le client API.
+- **Sécurité et Authentification** :
+  - Intégration de `expo-secure-store` pour chiffrer le stockage du JWT.
+  - Implémentation d'un intercepteur Axios pour injecter automatiquement le token dans les requêtes API.
+- **Design System Natif** :
+  - Création de composants natifs calqués sur la charte web (`Button`, `Input` avec gestion d'erreurs).
+- **Navigation et Écrans** :
+  - `RootNavigator` intelligent (Aiguillage Auth vs Main).
+  - Écrans `LoginScreen` et `SignupScreen` connectés au backend.
+  - Écran `ProfileScreen` avec bouton de déconnexion fonctionnel.
+
 ## 3. Architecture cible (vue d'ensemble)
 
 ### 3.1 Infrastructure
