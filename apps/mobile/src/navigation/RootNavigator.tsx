@@ -1,25 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { useAuth } from '../contexts/AuthContext';
-import AuthStack from './AuthStack';
-import MainTabs from './MainTabs';
-import { View, ActivityIndicator } from 'react-native';
-import { theme } from '../theme/colors';
+import { ActivityIndicator, View } from 'react-native';
+import { useAuthStore } from '../store/useAuthStore';
+import { AuthNavigator } from './AuthNavigator';
+import { MainNavigator } from './MainNavigator';
+import { colors } from '../theme/colors';
 
-export default function RootNavigator() {
-  const { user, loading } = useAuth();
+export const RootNavigator = () => {
+  const { token, isLoading, checkAuth } = useAuthStore();
 
-  if (loading) {
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.slate[50] }}>
+        <ActivityIndicator size="large" color={colors.primary[500]} />
       </View>
     );
   }
 
   return (
     <NavigationContainer>
-      {user ? <MainTabs /> : <AuthStack />}
+      {token ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
-}
+};

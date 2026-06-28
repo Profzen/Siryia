@@ -2,27 +2,31 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
-// Sur émulateur Android, localhost correspond à l'émulateur lui-même. 
-// L'hôte (votre PC) est accessible via 10.0.2.2.
-// Sur iOS ou Web, on peut utiliser localhost.
-const API_URL = Platform.OS === 'android' 
-  ? 'http://10.0.2.2:3001/api' 
-  : 'http://localhost:3001/api';
+// Use 10.0.2.2 for Android Emulator, localhost for iOS simulator
+const getBaseUrl = () => {
+  if (__DEV__) {
+    return Platform.OS === 'android' ? 'http://10.0.2.2:3001/api' : 'http://localhost:3001/api';
+  }
+  return 'https://siryia.com/api'; // Prod URL
+};
 
-const client = axios.create({
-  baseURL: API_URL,
+export const api = axios.create({
+  baseURL: getBaseUrl(),
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-client.interceptors.request.use(async (config) => {
-  try {
+api.interceptors.request.use(
+  async (config) => {
     const token = await SecureStore.getItemAsync('siryia_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-  } catch (error) {
-    console.error('Error fetching token from SecureStore', error);
-  }
-  return config;
-});
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-export default client;
+// We will handle 401 interceptor inside the auth store or a global handler
+export default api;
