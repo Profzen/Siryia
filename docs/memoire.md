@@ -153,7 +153,7 @@
 
 ## 2. État d'avancement
 
-> Dernière mise à jour : **2026-06-25**
+> Dernière mise à jour : **2026-06-28**
 
 | Phase | Sprint | Statut | Notes |
 |-------|--------|--------|-------|
@@ -167,7 +167,7 @@
 | 1 | 1.5 Frontend Web complet | **Terminé** | Next.js, Refonte claire, Formulaire KYC Drag & Drop |
 | 1 | 1.6 Mobile Sync (Parité) | **Terminé** | React Native Expo, Navigation, Auth, KYC, Paiements |
 | 1 | 1.7 Paiements & Escrow | **Terminé** | Architecture Hexagonale, MockProvider, Séquestre, Payout auto |
-| 1 | 1.8 Profils Entreprises (RCCM) | Non démarré | Annuaire B2B, Vérification KYB |
+| 1 | 1.8 Profils Entreprises (RCCM) | **Terminé** | Annuaire B2B/Solos, Gestion d'Équipe, Vérification KYB |
 | 3 | 3.1 → 3.10 | Non démarré | — |
 
 > Mettre à jour à la clôture de chaque sprint : statut, date, principaux livrables, problèmes notables.
@@ -291,6 +291,21 @@
 ### 2.8 Dépôt Git (2026-06-25)
 - Code Web, Backend et Mobile entièrement synchronisé, commit ("feat(mobile): Sprint 1.1-1.7 Mobile Parity") et poussé vers `https://github.com/Profzen/siryia.git`.
 - Résolution des problèmes de dépendances monorepo (lockfile et `expo/tsconfig.base`) en centralisant l'installation via `npm install` à la racine.
+
+### 2.9 Travail réalisé au 2026-06-28 (Liaison Paiement & Annuaire Professionnel)
+
+#### Liaison Commande ↔ Escrow
+- **Intégration** : L'action de checkout panier Next.js requiert le choix du mode de paiement (`TMONEY` ou `MOOV`) et le numéro de téléphone.
+- **Backend** : `OrdersService` enregistre la commande en BDD et appelle instantanément `initiateEscrowPayment` pour séquestrer les fonds.
+- **Sécurité** : Correction de l'ID utilisateur dans les requêtes JWT (`user.sub` -> `user.id`), alignant tous les contrôleurs sur le payload fourni par la stratégie Passport.
+
+#### Annuaire Professionnel & KYB
+- **Base de données** : Nouvelle migration Prisma pour ajouter les profils d'entreprises formelles (RCCM, NIF, adresse) et informelles (collectifs libres, artisans sans RCCM). Retrait du modèle brouillon `Wallet`.
+- **Espace Équipe** : Écran `/dashboard/company` permettant de créer une structure, éditer ses informations, et inviter des collaborateurs par email avec des rôles fins (`ADMIN` ou `EMPLOYEE`).
+- **Recherche & Fiches Publiques** : 
+  - Module public `/annuaire` pour rechercher et filtrer les structures et solos (les utilisateurs ayant le rôle `PROVIDER`).
+  - Écrans vitrines publics `/annuaire/solo/[id]` et `/annuaire/company/[id]` présentant la bio, les infos de contact, l'équipe et les actions de mise en relation (chat, devis).
+- **Correctifs de Build** : Remplacement de `ServiceWorkerGlobalScope` par `WorkerGlobalScope` dans `sw.ts` pour corriger les erreurs de compilation TypeScript Next.js.
 
 ---
 
@@ -478,6 +493,18 @@ d:\zen\projets\Doc\
 - **Cause** : L'utilisation de `&&` est invalide en PowerShell natif, ce qui fait échouer les chaînes d'installation `npm install x && npm install y`.
 - **Solution** : Utilisation du séparateur `;` propre à PowerShell, ou séparation en appels distincts.
 - **Leçon** : Toujours utiliser des commandes compatibles Windows (`;`) ou multiplateformes lors de la manipulation du terminal de l'IDE sous Windows.
+
+- **Date** : 2026-06-28
+- **Problème** : Échec de la commande `npx prisma generate` avec l'erreur `EPERM: operation not permitted`.
+- **Cause** : Le serveur de développement NestJS en watch mode tournait en arrière-plan et verrouillait le fichier de moteur de requête Prisma (.dll.node sous Windows).
+- **Solution** : Arrêter temporairement le processus NestJS (`npm run dev`) pour libérer le fichier, puis exécuter `npx prisma generate`.
+- **Leçon** : Avant de régénérer le client Prisma après des migrations de schéma, veiller à couper temporairement les serveurs actifs qui exploitent la base.
+
+- **Date** : 2026-06-28
+- **Problème** : Erreur de compilation `TS5103: Invalid value for '--ignoreDeprecations'` lors du lancement du serveur de dev NestJS.
+- **Cause** : NestJS utilise un compilateur CLI ou une version globale de TypeScript qui ne reconnaît pas l'option `"ignoreDeprecations": "6.0"` ajoutée pour Jest.
+- **Solution** : Suppression complète de `"baseUrl": "./"` et `"ignoreDeprecations": "6.0"` dans `apps/backend/tsconfig.json`. Comme le backend n'utilise pas de path mapping, `baseUrl` était inutile.
+- **Leçon** : Éviter d'ajouter des drapeaux de contournement de dépréciation dans `tsconfig.json` si la cause sous-jacente (comme `baseUrl`) peut être simplement supprimée.
 
 ---
 
