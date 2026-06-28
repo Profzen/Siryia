@@ -844,51 +844,44 @@ Pour assurer que l'application ne plante pas lors de sa mise en ligne, le procha
 - **Backend - Phase 2** : Le backend a été enrichi de bout en bout. Tous les contrôleurs, services et schémas Prisma pour les Agendas, la Téléconsultation et les Véhicules sont opérationnels.
 - **Administration** : Le panel Admin (`/admin`) est actif et restreint. Un script de seed (`apps/backend/seed-admin.ts`) a permis de générer un accès direct `admin@siryia.com`.
 
-## 19. ÉTAT ACTUEL DU PROJET (Résumé Global pour reprise de contexte)
-*Si vous reprenez ce projet après une pause ou dans une nouvelle session, lisez ceci :*
+## 19. ÉTAT ACTUEL DU PROJET ET HANDOFF (V2 - Sprint 2.4)
 
-### Ce qui est terminé et fonctionnel :
-1. **L'Infrastructure Globale (Monorepo)** :
-   - Frontend (Next.js 15, React 19, Tailwind CSS, Lucide Icons).
-   - Backend (NestJS 11, Prisma ORM, PostgreSQL via Supabase, WebSockets Socket.io).
-   - Application Mobile (Expo / React Native - Initialisée).
-2. **Fonctionnalités Front & Back connectées** :
-   - **Authentification** : Inscription et Connexion (Email OU Numéro de téléphone) avec hachage Argon2id et JWT Cookies.
-   - **Marketplace (`/marketplace`)** : Catalogue, fiches produits, catégories, panier.
-   - **Annuaire KYC (`/annuaire`)** : Liste des professionnels vérifiés.
-   - **Services & Missions (`/services`)** : Publication et consultation de demandes.
-   - **Véhicules (`/vehicles`)** : Consultation de la flotte disponible.
-   - **Dashboard Utilisateur (`/dashboard`)** : Gestion de profil.
-   - **Administration (`/admin`)** : Interface de gestion globale pour les rôles ADMIN. (Accès : `admin@siryia.com` / `admin`).
+*Ce chapitre est crucial. Si vous êtes un nouvel agent LLM ou si vous reprenez le projet après une pause, LISEZ ATTENTIVEMENT CE QUI SUIT pour avoir le contexte complet et enchaîner sans erreur.*
 
-### Comment lancer le projet :
-1. Installer les dépendances : `npm install` à la racine.
-2. Démarrer tous les serveurs : `npm run dev` (Lance Next.js sur :3000, NestJS sur :3001, et Expo).
-3. Base de données : Assurez-vous que le lien PostgreSQL Supabase est dans `apps/backend/.env`. Pour mettre à jour : `npx prisma db push`.
+### 19.1 Architecture & Stack Actuelle
+- **Monorepo (Turborepo)** : `apps/frontend` (Next.js 15, Tailwind v4), `apps/backend` (NestJS 11, Prisma), `apps/mobile` (React Native, Expo).
+- **Base de données** : PostgreSQL hébergé sur Supabase (projet `siryia-dev`). Prisma ORM gère le schéma (`schema.prisma`).
+- **Authentification** : JWT sécurisé + Argon2id. Géré par le backend. Le web stocke le token via Zustand (et occasionnellement cookie pour SSR), le mobile utilise `expo-secure-store`.
+- **Design System** : Thème clair (fond blanc, texte ardoise, primaire bleu `#17519b`, accent or `#d49a25`). Mode sombre désactivé pour rassurer les pros (B2B).
 
-### Prochaines étapes :
-- Tester le projet de bout en bout sur l'hébergement final.
-- Remplacer les données factices par des données de l'API réelle pour les pages récemment créées (Missions, Véhicules).
-- Poursuivre le développement Mobile si nécessaire.
+### 19.2 Fonctionnalités Web & Backend (Terminées & Opérationnelles)
+- **Auth** : Inscription/Connexion par Email OU Numéro de téléphone.
+- **Annuaire & KYB/KYC** : 
+  - Ajout récent du champ `profession` dans le `Profile`. 
+  - Les utilisateurs peuvent créer des profils 'Indépendant' ou 'Entreprise' (RCCM).
+  - Moteur de recherche d'annuaire (`/annuaire`) avec filtrage et pages vitrines détaillées publiques (`/annuaire/solo/[id]` et `/annuaire/company/[id]`).
+- **Marketplace & Véhicules** : Catalogues, filtres, pages détails et ajout au panier opérationnels.
+- **Paiements & Escrow** : Le paiement déclenche un séquestre (Escrow). L'argent est bloqué par Siryia jusqu'à validation de la commande.
+- **Services & Recrutement** : Création de missions, validation, messagerie interne, et système de notation (Review).
+- **Administration** : Back-office (`/admin`) opérationnel pour la gestion globale par l'équipe Siryia.
 
-### Corrections UX/UI (Fin Sprint 2.3)
-- **Tableau de bord** : Ajout d un bouton de retour vers la plateforme globale.
-- **Paramètres** : Création de la page /dashboard/settings avec gestion des préférences.
-- **Navigation Principale** : Intégration d un composant intelligent (AuthNavbarItem) sur la page d accueil qui remplace le bouton Connexion par l Avatar utilisateur et un lien vers le Dashboard si l utilisateur est connecté.
-- **Cookies** : Modification du cookie d authentification (httpOnly: false) pour permettre aux composants clients Zustand de récupérer le profil sans erreur 401.
+### 19.3 État de l'Application Mobile (React Native / Expo)
+L'application mobile a rattrapé le Web sur les fonctionnalités cœur (Sprint 1.6 à 2.4) :
+- **Authentification complète** : Login, Signup, persistance avec `useAuthStore`.
+- **Parité Annuaire** : Un onglet 'Annuaire' (`AnnuaireScreen.tsx`) avec recherche, filtres (Tous/Solos/Entreprises), et affichage des vitrines (`AnnuaireDetailScreen.tsx`).
+- **Parité Profil** : Bouton 'Modifier mon profil' dans `ProfileScreen.tsx` renvoyant vers un `EditProfileScreen.tsx` natif permettant de modifier le nom, la bio et la **profession**. 
+- **Navigation** : React Navigation v6 avec un mix de Tabs (`MainTabs`) et de Stacks (`ProfileStack`, `AnnuaireStack`).
+- **UI/UX** : Composants natifs stylisés selon la charte `theme.colors` stricte.
 
-### Ajout de la Profession (Annuaire)
-- Ajout d un champ profession de type texte libre au modèle Profile.
-- Mise à jour de UpdateProfileDto et du frontend ProfilePage pour permettre à un indépendant de saisir son métier.
-- Intégration dans le moteur de recherche de l annuaire (AnnuaireService) : les recherches scannent désormais ce champ.
-- Affichage du métier sur la carte résumé de l annuaire et sur la page Vitrine Solo détaillée.
+### 19.4 Comment lancer et développer
+1. **Dépendances** : `npm install` à la racine du monorepo.
+2. **Serveurs** : `npm run dev` lance simultanément Next.js (:3000), NestJS (:3001) et Expo (Mobile).
+3. **Base de données** : Le fichier `apps/backend/.env` pointe vers Supabase Cloud. Pour appliquer des modifications Prisma, utiliser `npx prisma db push` ou `npx prisma migrate dev`.
 
-### Corrections UX & Synchro Mobile (Fin Sprint 2.3)
-- **Navbar Web** : Correction de l effet de clignotement (flicker) du bouton Connexion à l ouverture d un nouvel onglet en attendant l initialisation de Zustand.
-- **Mobile (React Native)** : Synchronisation du type Profile pour inclure la profession et affichage du métier sous le nom dans ProfileScreen.
-- **Général** : Le swagger backend est déjà à jour via la DTO de profil.
+### 19.5 Prochaines étapes de développement (Sprint 2.5 et +)
+1. **Messagerie Temps Réel** : Remplacer la simulation actuelle par une vraie connexion WebSockets (Socket.io) sur le Web et le Mobile pour le chat de mission.
+2. **Déploiement Staging** : Préparer Vercel pour le Web et un hébergement persistant (ex: Render/Railway) pour le backend NestJS, afin de garantir le temps réel.
+3. **Paiement Réel** : Brancher les adaptateurs CinetPay/TMoney en remplacement du `MockPaymentService` actuel.
+4. **Fonctionnalités avancées** : Remplacer les données factices des pages 'Services/Missions' et 'Véhicules' par l'API réelle du backend qui est déjà prête.
 
-### Synchronisation Mobile Web 100% (Fin Sprint 2.4)
-- **Nouvel onglet Annuaire** sur l application React Native : Intégration de la recherche métier/nom, filtres (Solo/Entreprises) et affichage des résultats.
-- **Écran de Vitrine Annuaire** : Page détaillée reprenant la présentation complète d un prestataire.
-- **Édition de Profil Mobile** : Ajout d un écran avec formulaire pour éditer ses informations (dont la profession) et mise à jour de la navigation via ProfileStack.
+> **⚠️ Règle d'or pour le prochain agent** : Ce projet est colossal et avance vite. Si on te demande de modifier un fichier métier (ex: `schema.prisma`, un `controller`, ou un `store`), vérifie TOUJOURS si la modification doit être répercutée sur les trois plateformes (Backend, Web, Mobile) pour maintenir la parité 100% que nous avons durement acquise.
