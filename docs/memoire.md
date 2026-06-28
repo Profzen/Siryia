@@ -665,7 +665,21 @@ d:\zen\projets\Doc\
 - [x] Interface `/dashboard/messages` (historique, envoi dynamique sans rechargement).
 - [x] Système de notification in-app (`NotificationBell`) sur le Dashboard.
 
-> Les autres sprints (1.4, 1.6 → 1.16) sont détaillés dans le fichier `sprint.md`.
+### Étape N — Sprint 1.12 : Support Client (Ticketing) (TERMINÉ ✅)
+- [x] Modèles Prisma pour `Ticket`, `TicketMessage` et `KnowledgeArticle`.
+- [x] API NestJS : `SupportModule` pour la création et gestion de tickets utilisateurs.
+- [x] Frontend Next.js : Interfaces du chat Support `/dashboard/support/[id]`.
+- [x] Base de connaissances : Page publique de FAQ `/faq`.
+
+### Étape O — Sprint 1.13 : Console d'Administration Globale (TERMINÉ ✅)
+- [x] Hyper-sécurisation du backend : Injection des rôles (ex: `ADMIN`) dans la stratégie JWT et le `RolesGuard`.
+- [x] Layout hyper-sécurisé Next.js : Création du sous-domaine virtuel `/admin` accessible uniquement aux admins.
+- [x] Dashboard KPI : Cartes globales (Volume d'Affaires GMV, Tickets ouverts, Inscriptions).
+- [x] Gestion KYC & Utilisateurs : Tableaux de validation avec boutons d'approbation `PENDING` -> `VERIFIED`.
+- [x] Modération de Litiges : Vue globale de la file d'attente des tickets d'urgence.
+- [x] Supervision Financière : Tableaux de bord de l'Escrow global des commandes en cours, avec possibilité de forcer la libération.
+
+> Les autres sprints (1.14 → 1.16 : Hardening Sécurité, Soft Launch) sont détaillés dans le fichier `sprint.md`.
 
 ---
 
