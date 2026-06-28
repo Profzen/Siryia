@@ -354,6 +354,21 @@
   - Écrans `LoginScreen` et `SignupScreen` connectés au backend.
   - Écran `ProfileScreen` avec bouton de déconnexion fonctionnel.
 
+
+### 2.13 Travail réalisé au 2026-06-28 (Sprint 2.1 à 2.4 - Phase 2 Croissance)
+
+- **Sprint 2.1 : Agendas et RDV en ligne** :
+  - **Modélisation** : Ajout des modèles `Availability` et `Booking` dans le schéma Prisma pour la gestion des agendas des prestataires.
+  - **Backend** : Création de `AppointmentsModule` (CRUD disponibilités, réservations, statuts CONFIRMED/CANCELLED/COMPLETED).
+  - **Frontend** : Ajout du sélecteur de créneaux sur le profil indépendant public (`/annuaire/solo/[id]`) et de la console de gestion d'agenda dans le dashboard (`/dashboard/appointments`).
+- **Sprint 2.2 : Téléconsultation et Appel Vidéo** :
+  - **Modélisation & Backend** : Modèle `VideoSession` associé aux rendez-vous, avec simulation de jeton d'accès sécurisé dans `VideoModule`.
+  - **Frontend** : Création d'une interface de visioconférence WebRTC simulée sur la route dynamique `/dashboard/video/[bookingId]` avec gestion locale de la caméra/micro et fermeture de session.
+- **Sprint 2.3 & 2.4 : Location et Vente de Véhicules** :
+  - **Modélisation** : Enrichissement du modèle `Vehicle` (`isForRent`, `isForSale`, `salePrice`, `status`) et création des modèles `Inspection` et `RentalContract`.
+  - **Backend** : Création du module `VehiclesModule` gérant les locations (génération automatique de contrat de location PDF de séquestre) et l'achat direct de véhicules.
+  - **Frontend** : Page de marketplace de véhicules (`/marketplace/vehicles`) permettant aux utilisateurs de lister leur véhicule, de filtrer les résultats et de louer ou d'acheter en direct avec processus de checkout.
+
 ## 3. Architecture cible (vue d'ensemble)
 
 ### 3.1 Infrastructure

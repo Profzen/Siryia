@@ -19,6 +19,9 @@ import { MessagingModule } from './messaging/messaging.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SupportModule } from './support/support.module';
 import { AdminModule } from './admin/admin.module';
+import { AppointmentsModule } from './appointments/appointments.module';
+import { VideoModule } from './video/video.module';
+import { VehiclesModule } from './vehicles/vehicles.module';
 
 @Module({
   imports: [
@@ -44,6 +47,9 @@ import { AdminModule } from './admin/admin.module';
     NotificationsModule,
     SupportModule,
     AdminModule,
+    AppointmentsModule,
+    VideoModule,
+    VehiclesModule,
   ],
   controllers: [AppController],
   providers: [

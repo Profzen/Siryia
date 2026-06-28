@@ -103,7 +103,7 @@ export default function SoloProfilePage() {
         </Card>
 
         {/* Action Blocks */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="p-6 bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
             <div>
               <h3 className="text-lg font-bold text-slate-950 mb-2 flex items-center gap-2">
@@ -129,6 +129,48 @@ export default function SoloProfilePage() {
             </div>
             <Button onClick={() => alert('Demande de devis simulée !')} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold">
               Demander un devis
+            </Button>
+          </Card>
+
+          <Card className="p-6 bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <h3 className="text-lg font-bold text-slate-950 mb-2 flex items-center gap-2">
+                <Calendar className="text-primary-600" /> RDV & Consultation
+              </h3>
+              <p className="text-sm text-slate-600 mb-4">
+                Prenez un rendez-vous en ligne ou planifiez une téléconsultation vidéo instantanée.
+              </p>
+              
+              <div className="mb-4">
+                <input 
+                  type="datetime-local" 
+                  id="rdv-time"
+                  className="w-full p-2 border border-slate-200 rounded-lg text-sm bg-white"
+                />
+              </div>
+            </div>
+            <Button 
+              onClick={async () => {
+                const input = document.getElementById('rdv-time') as HTMLInputElement;
+                if (!input || !input.value) {
+                  alert('Veuillez sélectionner une date et heure.');
+                  return;
+                }
+                const { bookAppointment } = await import('@/app/actions/appointments');
+                const res = await bookAppointment({
+                  providerId: params.id as string,
+                  dateTime: new Date(input.value).toISOString(),
+                  notes: 'Demande de consultation depuis le profil public',
+                });
+                if (res.success) {
+                  alert('Rendez-vous réservé avec succès !');
+                } else {
+                  alert('Erreur : ' + (res.error || 'Veuillez vérifier les disponibilités.'));
+                }
+              }} 
+              className="w-full bg-green-600 hover:bg-green-500 text-white font-semibold"
+            >
+              Réserver le créneau
             </Button>
           </Card>
         </div>

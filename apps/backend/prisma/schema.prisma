@@ -38,6 +38,10 @@ model User {
   rentalsAsRenter  Rental[]         @relation("RenterRentals")
   adCampaigns      AdCampaign[]
   
+  availabilities   Availability[]   @relation("ProviderAvailability")
+  bookingsAsProvider Booking[]      @relation("ProviderBookings")
+  bookingsAsClient   Booking[]      @relation("ClientBookings")
+  
   reviewsGiven     Review[]         @relation("ReviewsGiven")
   reviewsReceived  Review[]         @relation("ReviewsReceived")
   contractsAsClient Contract[]      @relation("ClientContracts")
@@ -311,10 +315,26 @@ model Vehicle {
   year        Int
   dailyRate   Decimal  @db.Decimal(10, 2)
   
+  // Added for Sprint 2.3 & 2.4
+  isForRent   Boolean  @default(true)
+  isForSale   Boolean  @default(false)
+  salePrice   Decimal? @db.Decimal(10, 2)
+  images      String[]
+  status      VehicleStatus @default(AVAILABLE)
+
   rentals     Rental[]
+  inspections Inspection[]
+  contracts   RentalContract[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  RENTED
+  SOLD
+  MAINTENANCE
 }
 
 model Rental {
@@ -330,6 +350,9 @@ model Rental {
   vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
   renter      User     @relation("RenterRentals", fields: [renterId], references: [id])
   
+  inspections Inspection[]
+  contract    RentalContract?
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -340,6 +363,80 @@ enum RentalStatus {
   COMPLETED
   CANCELLED
 }
+
+model Inspection {
+  id           String   @id @default(uuid())
+  rentalId     String
+  rental       Rental   @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  vehicleId    String
+  vehicle      Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  inspectorId  String
+  type         String   // BEFORE, AFTER
+  photos       String[]
+  checklist    Json
+  signatureUrl String?
+  createdAt    DateTime @default(now())
+}
+
+model RentalContract {
+  id             String   @id @default(uuid())
+  rentalId       String   @unique
+  rental         Rental   @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  vehicleId      String
+  vehicle        Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  contractPdfUrl String?
+  signedAt       DateTime?
+  createdAt      DateTime @default(now())
+}
+
+// -----------------------------------------------------------------------------
+// AGENDAS & RDV EN LIGNE (Sprint 2.1) & TÉLÉCONSULTATION (Sprint 2.2)
+// -----------------------------------------------------------------------------
+
+model Availability {
+  id          String   @id @default(uuid())
+  providerId  String
+  provider    User     @relation("ProviderAvailability", fields: [providerId], references: [id], onDelete: Cascade)
+  dayOfWeek   Int      // 0 = Sunday, 1 = Monday, etc.
+  startTime   String   // e.g., "09:00"
+  endTime     String   // e.g., "17:00"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  providerId  String
+  provider    User     @relation("ProviderBookings", fields: [providerId], references: [id], onDelete: Cascade)
+  clientId    String
+  client      User     @relation("ClientBookings", fields: [clientId], references: [id], onDelete: Cascade)
+  dateTime    DateTime
+  status      BookingStatus @default(PENDING)
+  notes       String?
+  paymentId   String?  @unique
+  videoSession VideoSession?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model VideoSession {
+  id          String   @id @default(uuid())
+  bookingId   String   @unique
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  roomName    String
+  token       String?
+  status      String   @default("PENDING") // PENDING, ACTIVE, COMPLETED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 
 // -----------------------------------------------------------------------------
 // ADS
