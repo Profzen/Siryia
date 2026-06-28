@@ -169,6 +169,7 @@
 | 1 | 1.7 Paiements & Escrow | **Terminé** | Architecture Hexagonale, MockProvider, Séquestre, Payout auto |
 | 1 | 1.8 Profils Entreprises (RCCM) | **Terminé** | Annuaire B2B/Solos, Gestion d'Équipe, Vérification KYB |
 | 1 | 1.10 Recrutement & Services | **Terminé** | Lifecycle complet, Notation, Contrats, Chat de mission |
+| 1 | 1.11 Messagerie & Notifications | **Terminé** | WebSockets (Socket.io), In-App, Anti-contournement |
 | 3 | 3.1 → 3.10 | Non démarré | — |
 
 > Mettre à jour à la clôture de chaque sprint : statut, date, principaux livrables, problèmes notables.

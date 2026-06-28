@@ -32,13 +32,13 @@ export default function Home() {
             <span className="text-2xl font-bold tracking-tight text-primary-600">Siryia</span>
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-            <a href="#" className="hover:text-[#D49A25] transition-colors">Marketplace</a>
-            <a href="#" className="hover:text-[#D49A25] transition-colors">Services</a>
-            <a href="#" className="hover:text-[#D49A25] transition-colors">Annuaire</a>
+            <a href="/marketplace" className="hover:text-[#D49A25] transition-colors">Marketplace</a>
+            <a href="/services" className="hover:text-[#D49A25] transition-colors">Services</a>
+            <a href="/annuaire" className="hover:text-[#D49A25] transition-colors">Annuaire</a>
           </div>
-          <button className="px-5 py-2.5 rounded bg-primary-600 text-white hover:bg-primary-900 text-sm font-medium transition-all">
+          <a href="/login" className="px-5 py-2.5 rounded bg-primary-600 text-white hover:bg-primary-900 text-sm font-medium transition-all">
             Connexion
-          </button>
+          </a>
         </div>
       </nav>
 
@@ -79,13 +79,13 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
         >
-          <button className="w-full sm:w-auto px-8 py-4 rounded bg-primary-600 text-white font-semibold flex items-center justify-center gap-2 hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all">
+          <a href="/annuaire" className="w-full sm:w-auto px-8 py-4 rounded bg-primary-600 text-white font-semibold flex items-center justify-center gap-2 hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all">
             Explorer l'écosystème
             <ArrowRight className="w-4 h-4" />
-          </button>
-          <button className="w-full sm:w-auto px-8 py-4 rounded border border-slate-200 text-slate-700 font-medium flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors">
+          </a>
+          <a href="/login" className="w-full sm:w-auto px-8 py-4 rounded border border-slate-200 text-slate-700 font-medium flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors">
             Devenir partenaire
-          </button>
+          </a>
         </motion.div>
       </div>
 

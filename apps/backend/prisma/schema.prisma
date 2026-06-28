@@ -44,6 +44,7 @@ model User {
   contractsAsProvider Contract[]    @relation("ProviderContracts")
   messagesSent     Message[]        @relation("MessagesSent")
   messagesReceived Message[]        @relation("MessagesReceived")
+  notifications    Notification[]
 
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -443,7 +444,9 @@ model Message {
   senderId         String
   receiverId       String
   serviceRequestId String?
-  content          String
+  content          String?  // Optionnel si c'est juste une image
+  attachments      String[] // Liste d'URLs
+  messageType      MessageType @default(TEXT)
   isFiltered       Boolean  @default(false) // Pour le filtrage anti-contournement
   
   sender           User     @relation("MessagesSent", fields: [senderId], references: [id])
@@ -452,4 +455,37 @@ model Message {
   
   isRead           Boolean  @default(false)
   createdAt        DateTime @default(now())
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  AUDIO
+  FILE
+}
+
+// -----------------------------------------------------------------------------
+// NOTIFICATIONS
+// -----------------------------------------------------------------------------
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title       String
+  body        String
+  type        NotificationType @default(SYSTEM)
+  actionUrl   String?
+  isRead      Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+}
+
+enum NotificationType {
+  SYSTEM
+  MESSAGE
+  ORDER
+  SERVICE
+  PAYMENT
 }

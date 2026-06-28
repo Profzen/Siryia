@@ -13,6 +13,8 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
 import { CompaniesModule } from './companies/companies.module';
 import { AnnuaireModule } from './annuaire/annuaire.module';
 import { RecrutementModule } from './recrutement/recrutement.module';
+import { MessagingModule } from './messaging/messaging.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { RecrutementModule } from './recrutement/recrutement.module';
     CompaniesModule,
     AnnuaireModule,
     RecrutementModule,
+    MessagingModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
