@@ -771,3 +771,8 @@ _Dernière mise à jour : 2026-06-28 (Fin du Sprint 1.11 - Backend et Frontend M
 - **Page Services** : Création d'une page `apps/frontend/src/app/services/page.tsx` pour combler la 404 en attendant l'intégration complète du module de recrutement.
 
 **Statut** : Le MVP est maintenant stabilisé, parfaitement fonctionnel de bout en bout, sans scroll horizontal, et supporte les numéros de téléphone. Prêt pour le **Sprint 1.14 (Sécurité & Pré-prod)**.
+
+## 16. Stratégie de Déploiement (Pré-Prod vs Prod)
+Suite à des échanges, voici la stratégie retenue :
+- **Pré-Production / Démo** : Le Frontend et le Backend seront tous les deux hébergés sur **Vercel** pour avoir une démo en ligne rapidement présentable. Le backend NestJS nécessitera un adaptateur (fichier `api/index.ts` et `vercel.json`) pour tourner en mode "Serverless". La messagerie (WebSockets) ne fonctionnera pas en temps réel (fallback en HTTP/latence), mais ce n'est pas grave pour la démo.
+- **Production finale** : Le frontend restera sur Vercel, mais le Backend migrera sur un serveur dédié ou un service PaaS permanent (Render/Railway) pour assurer le temps réel.
