@@ -9,11 +9,22 @@ import { useAuthStore } from '@/store/useAuthStore';
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isHydrated, logout } = useAuthStore();
+  const { user, fetchProfile, logout } = useAuthStore();
   const [authorized, setAuthorized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (isHydrated) {
+    const init = async () => {
+      if (!user) {
+        await fetchProfile();
+      }
+      setIsLoading(false);
+    };
+    init();
+  }, [user, fetchProfile]);
+
+  useEffect(() => {
+    if (!isLoading) {
       if (!user) {
         router.push('/login');
       } else if (!user.roles?.includes('ADMIN') && !user.roles?.includes('SUPER_ADMIN')) {
@@ -22,9 +33,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         setAuthorized(true);
       }
     }
-  }, [isHydrated, user, router]);
+  }, [isLoading, user, router]);
 
-  if (!isHydrated || !authorized) {
+  if (isLoading || !authorized) {
     return (
       <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
         <ShieldAlert className="w-16 h-16 text-primary-500 mb-4" />
