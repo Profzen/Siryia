@@ -646,6 +646,25 @@ d:\zen\projets\Doc\
 - [x] Endpoints webhooks de retour (T-Money/Moov factices).
 - [x] Endpoint de `releaseEscrow` (Transfert vers le vendeur automatisé).
 
+### Étape K — Sprint 1.8 : Profils Entreprises & Annuaire (TERMINÉ ✅)
+- [x] Modèles Prisma pour Entreprises (KYB) avec vérification RCCM.
+- [x] Espace équipe `/dashboard/company` pour gestion collaborative.
+- [x] Vitrines publiques `/annuaire` (Recherche, filtres, pages Solos et Entreprises).
+
+### Étape L — Sprint 1.10 : Recrutement & Services (TERMINÉ ✅)
+- [x] Création des requêtes de services (ServiceRequest).
+- [x] Gestion des contrats et de l'avancement (Lifecycle métier).
+- [x] Implémentation du système de reviews bilatérales.
+- [x] Logique de libération de l'escrow à la fin de la mission.
+
+### Étape M — Sprint 1.11 : Messagerie & Notifications (TERMINÉ ✅)
+- [x] Gateway WebSockets avec Socket.io (`apps/backend`).
+- [x] Sécurisation temps réel via JWT & authentification.
+- [x] Anti-contournement dynamique : regex détectant emails et téléphones pour censurer les coordonnées hors mission.
+- [x] Frontend Next.js : Store `Zustand` pour persistance de l'instance Socket.io.
+- [x] Interface `/dashboard/messages` (historique, envoi dynamique sans rechargement).
+- [x] Système de notification in-app (`NotificationBell`) sur le Dashboard.
+
 > Les autres sprints (1.4, 1.6 → 1.16) sont détaillés dans le fichier `sprint.md`.
 
 ---
