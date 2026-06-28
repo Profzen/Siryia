@@ -168,6 +168,7 @@
 | 1 | 1.6 Mobile Sync (Parité) | **Terminé** | React Native Expo, Navigation, Auth, KYC, Paiements |
 | 1 | 1.7 Paiements & Escrow | **Terminé** | Architecture Hexagonale, MockProvider, Séquestre, Payout auto |
 | 1 | 1.8 Profils Entreprises (RCCM) | **Terminé** | Annuaire B2B/Solos, Gestion d'Équipe, Vérification KYB |
+| 1 | 1.10 Recrutement & Services | **Terminé** | Lifecycle complet, Notation, Contrats, Chat de mission |
 | 3 | 3.1 → 3.10 | Non démarré | — |
 
 > Mettre à jour à la clôture de chaque sprint : statut, date, principaux livrables, problèmes notables.
@@ -305,7 +306,21 @@
 - **Recherche & Fiches Publiques** : 
   - Module public `/annuaire` pour rechercher et filtrer les structures et solos (les utilisateurs ayant le rôle `PROVIDER`).
   - Écrans vitrines publics `/annuaire/solo/[id]` et `/annuaire/company/[id]` présentant la bio, les infos de contact, l'équipe et les actions de mise en relation (chat, devis).
-- **Correctifs de Build** : Remplacement de `ServiceWorkerGlobalScope` par `WorkerGlobalScope` dans `sw.ts` pour corriger les erreurs de compilation TypeScript Next.js.
+#### Correctifs de Build
+- Remplacement de `ServiceWorkerGlobalScope` par `WorkerGlobalScope` dans `sw.ts` pour corriger les erreurs de compilation TypeScript Next.js.
+
+### 2.10 Travail réalisé au 2026-06-28 (Sprint 1.10 - Recrutement & Services)
+
+- **Modélisation Base de Données (Prisma)** :
+  - Ajout du modèle `Contract` pour la génération et validation des contrats entre prestataire et client.
+  - Ajout du modèle `Review` pour gérer la notation bilatérale en fin de mission.
+  - Ajout du modèle `Message` avec flag `isFiltered` pour héberger le chat interne de la mission et préparer le filtrage anti-contournement.
+  - Correction de `ServiceRequest` par l'ajout de `categoryId`.
+- **Backend (API NestJS)** :
+  - Ajout de `completeRequest` : passe le besoin en `COMPLETED` et appelle automatiquement le déblocage du séquestre (`releaseEscrow`).
+  - Ajout de `cancelRequest` : permet d'annuler une mission non finalisée.
+  - Ajout de `submitReview` : soumission de note et commentaire avec validation RBAC stricte (seul le client ou prestataire de la mission peut noter).
+- **Validation** : Le code complet compile sans erreur (`npm run build`). Migration exécutée et Base de Données synchronisée.
 
 ---
 

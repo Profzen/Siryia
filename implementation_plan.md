@@ -1,61 +1,52 @@
-# Sprint 1.5 - Frontend Web (Authentification et Profil)
+# Sprint 1.10 - Recrutement & Services (Finalisation)
 
-Ce document décrit le plan pour connecter notre interface Next.js au backend NestJS et construire l'expérience utilisateur (UI/UX) pour l'authentification et le tableau de bord, tout en respectant l'esthétique atypique "glassmorphism sombre" de Siryia.
-
-## Objectif
-
-Permettre à un utilisateur de s'inscrire, de se connecter et d'accéder à son espace personnel sécurisé, en communiquant avec notre base de données Supabase via notre propre API NestJS.
+Suite à notre avancée sur la tâche 1.10, nous avons déjà mis en place la création de besoins (`ServiceRequest`), la soumission de devis (`Proposal`), et l'acceptation de devis avec séquestre automatique (`Escrow`). Il reste maintenant à finaliser le cycle de vie de la mission et à corriger quelques incohérences dans le schéma de la base de données.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Validation du design system.** L'interface sera conçue exclusivement en mode "Dark", avec des effets de transparence (glass) et des orbes lumineuses en fond, comme décidé lors du Sprint 0.2. Voulez-vous utiliser des bibliothèques de composants bruts (comme shadcn/ui) ou préférez-vous que je code des composants sur-mesure pour garantir ce côté "atypique" ? (Je préconise le sur-mesure pour éviter le côté générique).
+> **Modifications de la Base de Données (Prisma)** : Je dois modifier le schéma pour ajouter les éléments manquants pour cette tâche :
+> 1. Ajouter le champ `categoryId` à `ServiceRequest` (actuellement dans le DTO mais manquant en base).
+> 2. Ajouter un modèle `Review` pour gérer la **notation bilatérale** à la fin d'une mission.
+> 3. Ajouter un modèle `Contract` pour la génération et signature de contrats.
+> Êtes-vous d'accord pour que je lance ces modifications Prisma (`npx prisma migrate dev`) lors de la phase d'exécution ?
 
 ## Open Questions
 
 > [!WARNING]
-> - Pour le stockage du Token (JWT), préférez-vous qu'on utilise un simple cookie `httpOnly` (géré par le backend) ou qu'on le stocke côté client (LocalStorage/Zustand) pour ce MVP ?
-> - Voudrez-vous la connexion par Google/Apple (OAuth) dès ce sprint, ou on se concentre uniquement sur Email/Mot de passe pour l'instant ?
+> - **Messagerie interne anti-contournement** : La tâche 1.10 mentionne une messagerie. Voulez-vous qu'on implémente dès maintenant un modèle `Message` pour le chat interne lié à une mission, ou préfère-t-on s'appuyer sur la messagerie globale prévue pour le Sprint 1.11 ?
+> - **Génération PDF des contrats** : Pour le MVP, je propose de créer l'entité `Contract` en base et de simuler la signature électronique via un statut (ex: `SIGNED`), sans intégrer d'outil tiers payant type DocuSign tout de suite. Est-ce que cela vous convient ?
 
 ## Proposed Changes
 
-### Composant: Backend (API Gateway)
+### Schéma Base de Données (Prisma)
 
-#### [MODIFY] [main.ts](file:///g:/zen/projets/Doc/apps/backend/src/main.ts)
-- Ajout de `app.enableCors()` pour autoriser le port `3000` (Next.js) à faire des requêtes vers le port `3001` (NestJS) sans blocage de sécurité navigateur.
+#### [MODIFY] [schema.prisma](file:///g:/zen/projets/Doc/apps/backend/prisma/schema.prisma)
+- Ajouter `categoryId` et la relation `Category` sur le modèle `ServiceRequest`.
+- Créer le modèle `Review` (id, reviewerId, targetId, serviceRequestId, rating, comment).
+- Créer le modèle `Contract` (id, serviceRequestId, providerId, clientId, terms, status).
 
-### Composant: Frontend (Next.js)
+### Composant: Backend (API NestJS)
 
-#### [NEW] Configuration et Dépendances
-- Installation de `axios` pour les requêtes HTTP vers l'API.
-- Installation de `zustand` pour la gestion d'état global (stocker l'utilisateur connecté).
-- Installation de `@tanstack/react-query` pour gérer le cache et l'état des requêtes.
+#### [MODIFY] [recrutement.service.ts](file:///g:/zen/projets/Doc/apps/backend/src/recrutement/recrutement.service.ts)
+- Ajouter la méthode `completeRequest(clientId, requestId)` : passe le statut à `COMPLETED` et appelle `paymentService.releaseEscrow()` pour payer le prestataire.
+- Ajouter la méthode `cancelRequest(clientId, requestId)` : annulation avant démarrage.
+- Ajouter la méthode `submitReview(userId, requestId, dto)` : enregistrer la notation bilatérale en fin de mission.
 
-#### [NEW] Fichiers utilitaires
-- `src/lib/api.ts` : Instance Axios préconfigurée (intercepteur pour ajouter automatiquement le token JWT à chaque requête).
-- `src/store/useAuthStore.ts` : Store Zustand pour garder en mémoire si l'utilisateur est connecté.
+#### [MODIFY] [recrutement.controller.ts](file:///g:/zen/projets/Doc/apps/backend/src/recrutement/recrutement.controller.ts)
+- Exposer les nouvelles routes HTTP `PATCH /requests/:id/complete`, `PATCH /requests/:id/cancel` et `POST /requests/:id/reviews`.
 
-#### [NEW] UI Components (Design System Siryia)
-- `src/components/ui/Input.tsx` : Champ de texte stylisé avec bordures lumineuses au focus.
-- `src/components/ui/Button.tsx` : Bouton avec effets de hover dynamiques et support de chargement (spinner).
-- `src/components/ui/GlassCard.tsx` : Conteneur semi-transparent avec flou d'arrière-plan.
-
-#### [NEW] Pages d'Authentification
-- `src/app/(auth)/login/page.tsx` : Formulaire de connexion (Email + Password).
-- `src/app/(auth)/signup/page.tsx` : Formulaire d'inscription (Email + Password + Nom).
-
-#### [NEW] Espace Sécurisé
-- `src/app/dashboard/layout.tsx` : Layout protégé qui vérifie si l'utilisateur est connecté, sinon redirection vers `/login`.
-- `src/app/dashboard/page.tsx` : Tableau de bord de bienvenue affichant les informations du profil utilisateur récupérées depuis le backend.
+#### [MODIFY] [recrutement.dto.ts](file:///g:/zen/projets/Doc/apps/backend/src/recrutement/dto/recrutement.dto.ts)
+- Ajouter `SubmitReviewDto`.
 
 ## Verification Plan
 
 ### Automated Tests
-- Vérification que `npm run build` passe sans erreurs TypeScript sur le frontend.
+- Le backend compile sans erreur TypeScript.
 
 ### Manual Verification
-1. Démarrer le backend (`npm run start:dev` dans `apps/backend`).
-2. Démarrer le frontend (`npm run dev` dans `apps/frontend`).
-3. S'inscrire via l'interface web (création d'un nouvel utilisateur dans Supabase).
-4. Se déconnecter puis se reconnecter avec succès.
-5. Vérifier que la page `/dashboard` affiche bien les données personnelles du compte.
+1. Lancer la migration Prisma.
+2. Créer une `ServiceRequest` (qui acceptera désormais une `categoryId`).
+3. Soumettre une `Proposal`, l'accepter (ce qui initie le paiement escrow et passe le statut à `IN_PROGRESS`).
+4. Appeler la nouvelle route `complete` pour valider la fin de la mission et observer la libération automatique du paiement (`escrowReleasedAt` mis à jour).
+5. Soumettre une notation (`Review`) pour tester le retour d'expérience.

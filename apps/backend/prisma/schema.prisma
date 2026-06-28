@@ -37,6 +37,13 @@ model User {
   vehicles         Vehicle[]
   rentalsAsRenter  Rental[]         @relation("RenterRentals")
   adCampaigns      AdCampaign[]
+  
+  reviewsGiven     Review[]         @relation("ReviewsGiven")
+  reviewsReceived  Review[]         @relation("ReviewsReceived")
+  contractsAsClient Contract[]      @relation("ClientContracts")
+  contractsAsProvider Contract[]    @relation("ProviderContracts")
+  messagesSent     Message[]        @relation("MessagesSent")
+  messagesReceived Message[]        @relation("MessagesReceived")
 
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -149,8 +156,9 @@ model Category {
   parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
   children    Category[] @relation("CategoryHierarchy")
   
-  products    Product[]
-  services    ServiceListing[]
+  products        Product[]
+  services        ServiceListing[]
+  serviceRequests ServiceRequest[]
 }
 
 model Product {
@@ -240,8 +248,13 @@ model ServiceRequest {
   description String
   budget      Decimal? @db.Decimal(10, 2)
   status      RequestStatus @default(OPEN)
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
   
   proposals   Proposal[]
+  contracts   Contract[]
+  reviews     Review[]
+  messages    Message[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -372,4 +385,71 @@ enum PaymentStatus {
   SUCCESS
   FAILED
   REFUNDED
+}
+
+// -----------------------------------------------------------------------------
+// REVIEWS & RATINGS
+// -----------------------------------------------------------------------------
+
+model Review {
+  id               String   @id @default(uuid())
+  reviewerId       String
+  targetId         String
+  serviceRequestId String?  // Optionnel si on veut l'utiliser pour d'autres entités plus tard
+  rating           Int      // 1 to 5
+  comment          String?
+  
+  reviewer         User     @relation("ReviewsGiven", fields: [reviewerId], references: [id])
+  target           User     @relation("ReviewsReceived", fields: [targetId], references: [id])
+  request          ServiceRequest? @relation(fields: [serviceRequestId], references: [id], onDelete: SetNull)
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// CONTRACTS
+// -----------------------------------------------------------------------------
+
+model Contract {
+  id               String   @id @default(uuid())
+  serviceRequestId String
+  clientId         String
+  providerId       String
+  terms            String
+  status           ContractStatus @default(DRAFT)
+  
+  request          ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  client           User           @relation("ClientContracts", fields: [clientId], references: [id])
+  provider         User           @relation("ProviderContracts", fields: [providerId], references: [id])
+  
+  signedAt         DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum ContractStatus {
+  DRAFT
+  SIGNED
+  CANCELLED
+}
+
+// -----------------------------------------------------------------------------
+// MESSAGING
+// -----------------------------------------------------------------------------
+
+model Message {
+  id               String   @id @default(uuid())
+  senderId         String
+  receiverId       String
+  serviceRequestId String?
+  content          String
+  isFiltered       Boolean  @default(false) // Pour le filtrage anti-contournement
+  
+  sender           User     @relation("MessagesSent", fields: [senderId], references: [id])
+  receiver         User     @relation("MessagesReceived", fields: [receiverId], references: [id])
+  request          ServiceRequest? @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  
+  isRead           Boolean  @default(false)
+  createdAt        DateTime @default(now())
 }

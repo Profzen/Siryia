@@ -12,6 +12,7 @@ import { PaymentModule } from './payment/payment.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
 import { CompaniesModule } from './companies/companies.module';
 import { AnnuaireModule } from './annuaire/annuaire.module';
+import { RecrutementModule } from './recrutement/recrutement.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AnnuaireModule } from './annuaire/annuaire.module';
     MarketplaceModule,
     CompaniesModule,
     AnnuaireModule,
+    RecrutementModule,
   ],
   controllers: [AppController],
   providers: [AppService],
