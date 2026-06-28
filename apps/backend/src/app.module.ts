@@ -15,6 +15,7 @@ import { AnnuaireModule } from './annuaire/annuaire.module';
 import { RecrutementModule } from './recrutement/recrutement.module';
 import { MessagingModule } from './messaging/messaging.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     RecrutementModule,
     MessagingModule,
     NotificationsModule,
+    SupportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
