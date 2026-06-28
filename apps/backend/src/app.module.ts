@@ -10,6 +10,8 @@ import { AuthModule } from './auth/auth.module';
 import { KycModule } from './kyc/kyc.module';
 import { PaymentModule } from './payment/payment.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
+import { CompaniesModule } from './companies/companies.module';
+import { AnnuaireModule } from './annuaire/annuaire.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
     KycModule,
     PaymentModule,
     MarketplaceModule,
+    CompaniesModule,
+    AnnuaireModule,
   ],
   controllers: [AppController],
   providers: [AppService],

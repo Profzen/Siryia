@@ -37,7 +37,6 @@ model User {
   vehicles         Vehicle[]
   rentalsAsRenter  Rental[]         @relation("RenterRentals")
   adCampaigns      AdCampaign[]
-  wallet           Wallet?
 
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -92,9 +91,15 @@ model UserRole {
 model Company {
   id          String   @id @default(uuid())
   name        String
+  isInformal  Boolean  @default(false)
+  bio         String?
+  logoUrl     String?
+  phone       String?
+  email       String?
   rccm        String?  // Registre du commerce
   taxId       String?  // NIF
   address     String?
+  kybStatus   KycStatus @default(PENDING)
   
   members     CompanyMember[]
   

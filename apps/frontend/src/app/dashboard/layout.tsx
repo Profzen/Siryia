@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/app/actions/auth";
 import Link from "next/link";
-import { LogOut, Home, User, Settings, ShieldCheck } from "lucide-react";
+import { LogOut, Home, User, Settings, ShieldCheck, Building2 } from "lucide-react";
 
 export default async function DashboardLayout({
   children,
@@ -32,6 +32,10 @@ export default async function DashboardLayout({
           <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-100 text-slate-700 transition-colors">
             <Home className="w-5 h-5 text-primary-600" />
             <span className="text-sm font-medium">Vue d'ensemble</span>
+          </Link>
+          <Link href="/dashboard/company" className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-100 text-slate-700 transition-colors">
+            <Building2 className="w-5 h-5 text-slate-700" />
+            <span className="text-sm font-medium">Mon Entreprise / Collectif</span>
           </Link>
           <Link href="/dashboard/kyc" className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-100 text-slate-700 transition-colors">
             <ShieldCheck className="w-5 h-5" />

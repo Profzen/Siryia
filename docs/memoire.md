@@ -644,12 +644,12 @@ Modules **exclus** du MVP (Phase 2+) :
 
 ---
 
-### 13.5 État d'avancement (2026-06-27)
-- **Marketplace Backend** : Initialisation du module `marketplace/` et liaison complète avec le module `payment` pour le paiement séquestre (TMoney / Moov Money) lors du checkout de la commande. Correction des ID d'utilisateurs (`user.sub` -> `user.id`).
-- **Marketplace Frontend** : Intégration d'un sélecteur de mode de paiement Mobile Money et de saisie de numéro dans [cart/page.tsx](file:///g:/zen/projets/Doc/apps/frontend/src/app/cart/page.tsx).
-- **Profil Utilisateur** : Refonte de la page de profil pour se conformer au design épuré V2 Pro/Organique (remplacement de `GlassCard` par `Card` standard) et correction des imports.
-- **PWA & Build** : Correction du Service Worker [sw.ts](file:///g:/zen/projets/Doc/apps/frontend/src/app/sw.ts) pour éliminer les erreurs de build TypeScript, et création de l'utilitaire d'API Axios [api.ts](file:///g:/zen/projets/Doc/apps/frontend/src/lib/api.ts) et du store global [useAuthStore.ts](file:///g:/zen/projets/Doc/apps/frontend/src/store/useAuthStore.ts).
+### 13.5 État d'avancement (2026-06-28)
+- **Marketplace & Paiement** : Liaison du checkout panier avec le module `payment` pour l'initiation automatique du paiement séquestre (TMoney / Moov Money) avec correctifs d'authentification (`user.sub` -> `user.id`).
+- **Annuaire & Profils Professionnels** : Implémentation du module de recherche globale unifié d'indépendants solos (rôle `PROVIDER`) et de structures (entreprises formelles avec RCCM/NIF et collectifs informels).
+- **Dashboard Équipe (KYB)** : Ajout de la page `/dashboard/company` pour enregistrer sa structure, gérer ses informations de contact, et inviter des collaborateurs par email.
+- **Vitrines Publiques** : Création des pages de recherche d'artisans (`/annuaire`), et des fiches détaillées solos (`/annuaire/solo/[id]`) et entreprises (`/annuaire/company/[id]`) en V2 Pro/Organique.
 
 ---
 
-_Dernière mise à jour : 2026-06-27 (Liaison Marketplace-Paiements, correctifs d'authentification et de build frontend)._
+_Dernière mise à jour : 2026-06-28 (Annuaire professionnel B2B/Solos, Dashboard équipe KYB, et compilation réussie)._
