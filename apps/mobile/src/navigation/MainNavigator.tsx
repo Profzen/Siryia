@@ -1,8 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from '../screens/main/HomeScreen';
-import { ProfileScreen } from '../screens/main/ProfileScreen';
-import { Home, User } from 'lucide-react-native';
+import { ProfileStack } from './ProfileStack';
+import { AnnuaireStack } from './AnnuaireStack';
+import { Home, User, Search } from 'lucide-react-native';
 import { colors } from '../theme/colors';
 
 const Tab = createBottomTabNavigator();
@@ -39,8 +40,16 @@ export const MainNavigator = () => {
         }}
       />
       <Tab.Screen 
+        name="Annuaire" 
+        component={AnnuaireStack} 
+        options={{
+          tabBarLabel: 'Annuaire',
+          tabBarIcon: ({ color, size }) => <Search color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen 
         name="Profile" 
-        component={ProfileScreen} 
+        component={ProfileStack} 
         options={{
           tabBarLabel: 'Profil',
           tabBarIcon: ({ color, size }) => <User color={color} size={size} />,

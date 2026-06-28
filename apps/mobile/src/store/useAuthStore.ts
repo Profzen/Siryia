@@ -9,6 +9,7 @@ interface AuthState {
   login: (credentials: any) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  fetchProfile: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -34,8 +35,13 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const token = await SecureStore.getItemAsync('siryia_token');
       if (token) {
-        // Optionnel: valider le token avec un endpoint /auth/profile
-        set({ token, isLoading: false });
+        set({ token, isLoading: true });
+        try {
+          const response = await api.get('/auth/profile');
+          set({ user: response.data, isLoading: false });
+        } catch (err) {
+          set({ isLoading: false });
+        }
       } else {
         set({ token: null, isLoading: false });
       }
@@ -43,4 +49,12 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ token: null, isLoading: false });
     }
   },
+  fetchProfile: async () => {
+    try {
+      const response = await api.get('/auth/profile');
+      set({ user: response.data });
+    } catch (error) {
+      console.error('Failed to fetch profile', error);
+    }
+  }
 }));

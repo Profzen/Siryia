@@ -887,3 +887,8 @@ Pour assurer que l'application ne plante pas lors de sa mise en ligne, le procha
 - **Navbar Web** : Correction de l effet de clignotement (flicker) du bouton Connexion à l ouverture d un nouvel onglet en attendant l initialisation de Zustand.
 - **Mobile (React Native)** : Synchronisation du type Profile pour inclure la profession et affichage du métier sous le nom dans ProfileScreen.
 - **Général** : Le swagger backend est déjà à jour via la DTO de profil.
+
+### Synchronisation Mobile Web 100% (Fin Sprint 2.4)
+- **Nouvel onglet Annuaire** sur l application React Native : Intégration de la recherche métier/nom, filtres (Solo/Entreprises) et affichage des résultats.
+- **Écran de Vitrine Annuaire** : Page détaillée reprenant la présentation complète d un prestataire.
+- **Édition de Profil Mobile** : Ajout d un écran avec formulaire pour éditer ses informations (dont la profession) et mise à jour de la navigation via ProfileStack.

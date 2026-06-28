@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../theme/colors';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Button } from '../../components/Button';
-import { LogOut, User, Mail, Shield } from 'lucide-react-native';
+import { LogOut, User, Mail, Shield, Edit } from 'lucide-react-native';
 
 export const ProfileScreen = () => {
   const { user, logout } = useAuthStore();
+  const navigation = useNavigation<any>();
 
   const handleLogout = async () => {
     await logout();
@@ -28,6 +30,13 @@ export const ProfileScreen = () => {
             <Text style={styles.profession}>{user.profile.profession}</Text>
           )}
           <Text style={styles.email}>{user?.email || user?.phone || 'Identifiant inconnu'}</Text>
+          
+          <Button 
+            title="Modifier mon profil" 
+            onPress={() => navigation.navigate('EditProfile')} 
+            variant="primary" 
+            style={{ marginTop: 20, minWidth: 200 }}
+          />
         </View>
 
         <View style={styles.section}>
