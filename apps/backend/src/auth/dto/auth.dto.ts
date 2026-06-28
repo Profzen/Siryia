@@ -18,6 +18,11 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'Le mot de passe est requis' })
   @MinLength(8, { message: 'Le mot de passe doit faire au moins 8 caractères' })
   password!: string;
+
+  @ApiPropertyOptional({ example: 'John Doe', description: 'Nom complet' })
+  @IsOptional()
+  @IsString()
+  name?: string;
 }
 
 export class LoginDto {
@@ -42,12 +47,20 @@ export class UpdateProfileDto {
   @IsString()
   lastName?: string;
 
+  @ApiPropertyOptional({ example: 'Artisan menuisier' })
+  @IsOptional()
+  @IsString()
+  profession?: string;
+
+  @ApiPropertyOptional({ example: 'Artisan menuisier' })
+  @IsOptional()
+  @IsString()
+  bio?: string;
+
   @ApiPropertyOptional({ example: '+22890000000' })
   @IsOptional()
   @IsString()
   phone?: string;
-
-  @ApiPropertyOptional({ example: 'Artisan menuisier' })
   @IsOptional()
   @IsString()
   bio?: string;

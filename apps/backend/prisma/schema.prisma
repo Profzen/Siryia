@@ -65,6 +65,7 @@ model Profile {
   
   firstName String?
   lastName  String?
+  profession String?
   bio       String?
   avatarUrl String?
   

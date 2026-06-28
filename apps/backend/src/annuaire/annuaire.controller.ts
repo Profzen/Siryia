@@ -53,6 +53,7 @@ export class AnnuaireController {
       id: user.id,
       type: 'SOLO',
       name,
+      profession: user.profile?.profession,
       bio: user.profile?.bio,
       avatarUrl: user.profile?.avatarUrl,
       kycLevel: user.profile?.kycLevel,

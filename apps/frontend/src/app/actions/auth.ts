@@ -31,7 +31,7 @@ export async function loginAction(prevState: any, formData: FormData) {
       cookieStore.set({
         name: "siryia_token",
         value: data.access_token,
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
@@ -77,7 +77,7 @@ export async function registerAction(prevState: any, formData: FormData) {
       cookieStore.set({
         name: "siryia_token",
         value: data.access_token,
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",

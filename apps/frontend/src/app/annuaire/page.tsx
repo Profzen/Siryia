@@ -156,6 +156,9 @@ export default function AnnuairePage() {
                   </div>
 
                   <h3 className="text-lg font-bold text-slate-900 mb-1">{prof.name}</h3>
+                  {prof.profession && (
+                    <p className="text-sm font-semibold text-primary-600 mb-2">{prof.profession}</p>
+                  )}
                   
                   <div className="flex items-center gap-1 mb-3">
                     <Star size={14} className="text-yellow-500 fill-yellow-500" />

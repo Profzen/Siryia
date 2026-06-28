@@ -19,7 +19,14 @@ export const ProfileScreen = () => {
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>{user?.profile?.firstName?.[0] || 'U'}</Text>
           </View>
-          <Text style={styles.name}>{user?.profile?.firstName} {user?.profile?.lastName}</Text>
+          <Text style={styles.name}>
+            {user?.profile?.firstName || user?.profile?.lastName 
+              ? `${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`.trim() 
+              : 'Utilisateur Siryia'}
+          </Text>
+          {user?.profile?.profession && (
+            <Text style={styles.profession}>{user.profile.profession}</Text>
+          )}
           <Text style={styles.email}>{user?.email || user?.phone || 'Identifiant inconnu'}</Text>
         </View>
 
@@ -86,10 +93,19 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.slate[900],
     marginBottom: 4,
+    textAlign: 'center',
+  },
+  profession: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.primary[600],
+    marginBottom: 4,
+    textAlign: 'center',
   },
   email: {
     fontSize: 16,
     color: colors.slate[500],
+    textAlign: 'center',
   },
   section: {
     marginBottom: 32,

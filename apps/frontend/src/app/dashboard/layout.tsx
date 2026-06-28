@@ -34,6 +34,9 @@ export default async function DashboardLayout({
           </div>
           
           <nav className="flex-1 px-4 py-6 space-y-2">
+            <Link href="/" className="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition-colors mb-6">
+              <span className="text-sm font-medium">← Retour à la plateforme</span>
+            </Link>
             <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-100 text-slate-700 transition-colors">
               <Home className="w-5 h-5 text-primary-600" />
               <span className="text-sm font-medium">Vue d'ensemble</span>

@@ -76,6 +76,10 @@ export default function SoloProfilePage() {
                 )}
               </div>
 
+              {profile.profession && (
+                <p className="text-lg font-semibold text-primary-600 mb-2">{profile.profession}</p>
+              )}
+
               <div className="flex items-center justify-center md:justify-start gap-1 mb-4">
                 <Star size={16} className="text-yellow-500 fill-yellow-500" />
                 <span className="text-sm font-semibold text-slate-800">4.9</span>

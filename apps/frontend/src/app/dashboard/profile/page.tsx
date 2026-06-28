@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Phone, Mail, FileText, Save, CheckCircle, AlertCircle } from 'lucide-react';
+import { User, Phone, Mail, FileText, Save, CheckCircle, AlertCircle, Briefcase } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -14,6 +14,7 @@ export default function ProfilePage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    profession: '',
     phone: '',
     bio: ''
   });
@@ -21,15 +22,24 @@ export default function ProfilePage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
-    if (!user) {
-      fetchProfile();
-    } else {
+    if (user?.profile) {
+      setFormData({
+        firstName: user.profile.firstName || '',
+        lastName: user.profile.lastName || '',
+        profession: user.profile.profession || '',
+        phone: user.profile.phone || '',
+        bio: user.profile.bio || ''
+      });
+    } else if (user) {
       setFormData({
         firstName: user.profile?.firstName || '',
         lastName: user.profile?.lastName || '',
+        profession: user.profile?.profession || '',
         phone: user.phone || '',
         bio: user.profile?.bio || '',
       });
+    } else {
+      fetchProfile();
     }
   }, [user, fetchProfile]);
 
@@ -131,6 +141,18 @@ export default function ProfilePage() {
                   className="bg-slate-50 border-slate-200 text-slate-900 focus:bg-white"
                 />
               </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700 block">Profession / Métier</label>
+              <Input
+                name="profession"
+                value={formData.profession || ''}
+                onChange={handleChange}
+                icon={<Briefcase size={18} className="text-slate-400" />}
+                placeholder="Ex: Avocat d'affaires, Développeur web..."
+                className="bg-slate-50 border-slate-200 text-slate-900 focus:bg-white"
+              />
             </div>
 
             <div className="space-y-1">

@@ -870,3 +870,20 @@ Pour assurer que l'application ne plante pas lors de sa mise en ligne, le procha
 - Tester le projet de bout en bout sur l'hébergement final.
 - Remplacer les données factices par des données de l'API réelle pour les pages récemment créées (Missions, Véhicules).
 - Poursuivre le développement Mobile si nécessaire.
+
+### Corrections UX/UI (Fin Sprint 2.3)
+- **Tableau de bord** : Ajout d un bouton de retour vers la plateforme globale.
+- **Paramètres** : Création de la page /dashboard/settings avec gestion des préférences.
+- **Navigation Principale** : Intégration d un composant intelligent (AuthNavbarItem) sur la page d accueil qui remplace le bouton Connexion par l Avatar utilisateur et un lien vers le Dashboard si l utilisateur est connecté.
+- **Cookies** : Modification du cookie d authentification (httpOnly: false) pour permettre aux composants clients Zustand de récupérer le profil sans erreur 401.
+
+### Ajout de la Profession (Annuaire)
+- Ajout d un champ profession de type texte libre au modèle Profile.
+- Mise à jour de UpdateProfileDto et du frontend ProfilePage pour permettre à un indépendant de saisir son métier.
+- Intégration dans le moteur de recherche de l annuaire (AnnuaireService) : les recherches scannent désormais ce champ.
+- Affichage du métier sur la carte résumé de l annuaire et sur la page Vitrine Solo détaillée.
+
+### Corrections UX & Synchro Mobile (Fin Sprint 2.3)
+- **Navbar Web** : Correction de l effet de clignotement (flicker) du bouton Connexion à l ouverture d un nouvel onglet en attendant l initialisation de Zustand.
+- **Mobile (React Native)** : Synchronisation du type Profile pour inclure la profession et affichage du métier sous le nom dans ProfileScreen.
+- **Général** : Le swagger backend est déjà à jour via la DTO de profil.

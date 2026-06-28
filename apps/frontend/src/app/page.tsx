@@ -1,7 +1,56 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, ShoppingBag, Briefcase, Map, Car, Sparkles } from "lucide-react";
+import { ArrowRight, ShoppingBag, Briefcase, Map, Car, Sparkles, User, LogOut } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect, useState } from "react";
+import { logoutAction } from "@/app/actions/auth";
+
+function AuthNavbarItem() {
+  const { isAuthenticated, user, fetchProfile, isInitialized } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    if (!isAuthenticated && !isInitialized) {
+      fetchProfile();
+    }
+  }, [isAuthenticated, isInitialized, fetchProfile]);
+
+  if (!mounted || (!isInitialized && !isAuthenticated)) {
+    return <div className="w-24 h-10 animate-pulse bg-slate-100 rounded"></div>;
+  }
+
+  if (isAuthenticated && user) {
+    const initials = user.profile?.firstName 
+      ? user.profile.firstName.charAt(0).toUpperCase() 
+      : user.email?.charAt(0).toUpperCase() || "U";
+      
+    return (
+      <div className="flex items-center gap-4">
+        <a href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">
+          Tableau de bord
+        </a>
+        <div className="flex items-center gap-2">
+          <div className="w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold border border-primary-200">
+            {initials}
+          </div>
+          <form action={logoutAction}>
+            <button type="submit" className="p-2 text-slate-400 hover:text-red-500 transition-colors" title="Se déconnecter">
+              <LogOut className="w-5 h-5" />
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <a href="/login" className="px-5 py-2.5 rounded bg-primary-600 text-white hover:bg-primary-900 text-sm font-medium transition-all shadow-sm">
+      Connexion
+    </a>
+  );
+}
 
 export default function Home() {
   const containerVariants = {
@@ -36,9 +85,9 @@ export default function Home() {
             <a href="/services" className="hover:text-[#D49A25] transition-colors">Services</a>
             <a href="/annuaire" className="hover:text-[#D49A25] transition-colors">Annuaire</a>
           </div>
-          <a href="/login" className="px-5 py-2.5 rounded bg-primary-600 text-white hover:bg-primary-900 text-sm font-medium transition-all">
-            Connexion
-          </a>
+          <div className="flex items-center gap-4">
+            <AuthNavbarItem />
+          </div>
         </div>
       </nav>
 

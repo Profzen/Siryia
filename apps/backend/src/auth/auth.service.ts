@@ -12,7 +12,7 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { identifier, password } = registerDto;
+    const { identifier, password, name } = registerDto;
     const isEmail = identifier.includes('@');
 
     // Vérifier si l'utilisateur existe déjà
@@ -23,11 +23,23 @@ export class AuthService {
 
     // Hacher le mot de passe avec Argon2id
     const hashedPassword = await argon2.hash(password);
+    
+    let profileData = undefined;
+    if (name) {
+      const parts = name.split(' ');
+      profileData = {
+        create: {
+          firstName: parts[0],
+          lastName: parts.slice(1).join(' ') || '',
+        }
+      };
+    }
 
     // Créer l'utilisateur
     const user = await this.usersService.create({
       ...(isEmail ? { email: identifier } : { phone: identifier }),
       passwordHash: hashedPassword,
+      profile: profileData,
     });
 
     return this.generateToken(user.id, identifier);
