@@ -776,3 +776,18 @@ _Dernière mise à jour : 2026-06-28 (Fin du Sprint 1.11 - Backend et Frontend M
 Suite à des échanges, voici la stratégie retenue :
 - **Pré-Production / Démo** : Le Frontend et le Backend seront tous les deux hébergés sur **Vercel** pour avoir une démo en ligne rapidement présentable. Le backend NestJS nécessitera un adaptateur (fichier `api/index.ts` et `vercel.json`) pour tourner en mode "Serverless". La messagerie (WebSockets) ne fonctionnera pas en temps réel (fallback en HTTP/latence), mais ce n'est pas grave pour la démo.
 - **Production finale** : Le frontend restera sur Vercel, mais le Backend migrera sur un serveur dédié ou un service PaaS permanent (Render/Railway) pour assurer le temps réel.
+
+## 17. Point d'étape global et Décisions d'Hébergement
+
+### Ce qui a été acté :
+- **MVP Complété à 100%** : Le cycle complet des Sprints 1.1 à 1.13 est terminé. Les fonctionnalités critiques (Auth par téléphone, Paiements, Escrow, Messagerie temps réel, Back-office Admin, Recrutement) sont validées localement et la base de données (Supabase) est à jour.
+- **Décision Vercel (Pré-production)** : Pour des besoins de présentation rapide, le projet complet (Frontend et Backend) pourra être déployé temporairement sur Vercel. 
+  - **Avantage** : Gratuit, rapide, lien en ligne pour les démos.
+  - **Inconvénient assumé** : La messagerie WebSockets perdra son temps réel pur (fallback HTTP dû au mode serverless de Vercel). Cela reste acceptable pour une démo.
+- **Environnement Local** : Le développement local (`npm run dev`) continue de bénéficier de 100% de la puissance de Node.js et du temps réel WebSocket.
+
+### Prochaine étape : Sprint 1.14 (Sécurisation et Préparation Vercel)
+Pour assurer que l'application ne plante pas lors de sa mise en ligne, le prochain sprint sera dédié à :
+1. **Adaptateur Vercel** : Création d'un point d'entrée serverless (`api/index.ts`) et d'un `vercel.json` pour que NestJS tourne sur l'infrastructure Vercel.
+2. **Hardening (Sécurité API)** : Intégration de `helmet` (headers HTTP sécurisés), CORS strict, et limitation de requêtes (Rate Limiting) pour bloquer le spam (très important une fois en ligne).
+3. **Tests de Build** : S'assurer que le monorepo compile sans la moindre erreur (`npm run build`).
