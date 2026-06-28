@@ -16,7 +16,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Siryia | Le Hub Africain du Commerce et des Services",
+  title: {
+    template: '%s | Siryia',
+    default: 'Siryia | Le Hub Africain du Commerce et des Services',
+  },
   description: "Plateforme SaaS multifonctionnelle : Marketplace, Services, Annuaire et Publicité.",
   manifest: "/manifest.json",
   appleWebApp: {
@@ -25,18 +28,35 @@ export const metadata: Metadata = {
     title: "Siryia",
   },
   openGraph: {
-    title: "Siryia | Le Hub Africain",
-    description: "Le Hub Africain du Commerce et des Services",
+    title: {
+      template: '%s | Siryia',
+      default: 'Siryia | Le Hub Africain',
+    },
+    description: "Le Hub Africain du Commerce et des Services. Trouvez artisans, prestataires, et produits en un clic.",
     url: "https://siryia.com",
     siteName: "Siryia",
     locale: "fr_FR",
     type: "website",
+    images: [
+      {
+        url: 'https://siryia.com/og-image.jpg', // Vous remplacerez par la vraie image plus tard
+        width: 1200,
+        height: 630,
+        alt: 'Siryia Platform',
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Siryia",
+    title: {
+      template: '%s | Siryia',
+      default: 'Siryia',
+    },
     description: "Le Hub Africain du Commerce et des Services",
+    images: ['https://siryia.com/og-image.jpg'],
   },
+  keywords: ["Afrique", "Commerce", "Services", "Freelance", "Togo", "Marketplace"],
+  authors: [{ name: "Siryia Team" }],
 };
 
 export default function RootLayout({
